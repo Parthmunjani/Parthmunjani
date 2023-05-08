@@ -33,7 +33,6 @@ class OrderPlacementDetails(Resource):
             for order in orders:
                 order_data = order.to_json(order)
                 order_data['order_items'] = []
-                
                 order_items = OrderItemModel.query.filter_by(order_id=order.id).all()
                 for item in order_items:
                     order_item_data = item.to_json(item)
