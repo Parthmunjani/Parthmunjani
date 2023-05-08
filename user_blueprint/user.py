@@ -55,7 +55,7 @@ class UpdateUser(Resource):
                     product = ProductModel.query.get(item.product_id)
                     product_data = { "name": product.name,"price": product.price,"quantity": item.quantity }
                     items.append(product_data)
-                order_data = { "id": order.id,"total_price": order.total_price,
+                order_data = { "order_id": order.id,"total_price": order.total_price,
                     "payment_status": order.payment_status,"order_items": items}
                 order_details.append(order_data)
             user_data = user.to_json(user)
@@ -71,7 +71,6 @@ class UpdateUser(Resource):
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})"""
-            
     def put(self,id):
         if request.content_type == 'application/json':
             data = request.json
