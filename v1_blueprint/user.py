@@ -4,10 +4,6 @@ from flask_restful import Resource
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
-class Index(Resource):
-    def get(self):
-        return make_response({"status":True,"details":"How Are You"})
-
 class UserView(Resource):
     def get(self): 
         try:

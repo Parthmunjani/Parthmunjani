@@ -2,7 +2,7 @@ from flask import Flask,Blueprint
 from flask_restful import Api
 from model import db
 from flask_migrate import Migrate
-from v1_blueprint.user import Index,UserView,UpdateUser
+from v1_blueprint.user import UserView,UpdateUser
 from v1_blueprint.category import CategoryView,UpdateCategory
 from v1_blueprint.product import  ProductView,ProductDetails
 from v1_blueprint.address import AddressView,Addressdetails
@@ -24,7 +24,7 @@ data_blueprint=Blueprint('data',__name__)
 api=Api(data_blueprint)
 app.register_blueprint(data_blueprint,url_prefix='/')
 
-api.add_resource(Index,'/')
+
 api.add_resource(UserView,'/user')
 api.add_resource(UpdateUser,'/user/<int:id>/')
 api.add_resource(CategoryView,'/category')
