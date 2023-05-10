@@ -71,12 +71,10 @@ class OrderStatusCounts(Resource):
             category = CategoryModel.query.get(id)
             if not category:
                 return make_response({"status":False,"detail":'Category not found'})
-            
             counts = {}
-            for status in ['placed', 'paid', 'cancelled']:
+            for status in ['placed', 'paid', 'cancel']:
                 count = OrderModel.query.filter_by(status=status, category_id=id).count()
                 counts[status] = count
-
             return make_response({"status":True,"details": counts})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

@@ -151,7 +151,7 @@ class OrderModel(db.Model,Change):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     payment_status=db.Column(db.String(200),nullable=False)
     address_id=db.Column(db.Integer,db.ForeignKey('user_address.id'))
-    #category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     total_price = db.Column(db.Float())
     status = db.Column(db.String(20))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
