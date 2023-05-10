@@ -1,10 +1,7 @@
 from model import CategoryModel,db
 from flask import make_response,request
 from flask_restful import Resource
-from datetime import datetime
-from werkzeug.utils import secure_filename
-from model import ProductModel
-from sqlalchemy.orm import joinedload
+
 class CategoryView(Resource):
     def get(self):
         try:
@@ -58,7 +55,7 @@ class CategoryView(Resource):
             parent = CategoryModel.query.filter_by(id=parent_id).first() if parent_id else None
             create_category = CategoryModel(data, parent)
             CategoryModel.add(create_category)
-            data=create_category.to_json()
+            data=create_category.to_json(create_category)
             return make_response({"status":True,"detail":"Category add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -66,18 +63,18 @@ class CategoryView(Resource):
 class UpdateCategory(Resource):
     def get(self,id):
         try:
-            users = CategoryModel.query.get(id) 
-            if not users:
+            category = CategoryModel.query.get(id) 
+            if not category:
                 return make_response({"status": False, "details": "Category Not Available"})
-            data = users.to_dict()
+            data = category.to_dict()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
 
     def delete(self,id):
         try:
-            user = CategoryModel.query.get_or_404(id)
-            CategoryModel.delete(user)
+            category = CategoryModel.query.get_or_404(id)
+            CategoryModel.delete(category)
             return make_response({"Status":True,"detail":"Category Data Delete"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

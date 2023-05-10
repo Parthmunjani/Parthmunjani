@@ -8,7 +8,7 @@ class AddressView(Resource):
         try:
             address = UserAddressModel.query.all()
             if not address:
-                return make_response({"status":False,"detail":"Any Address Not in Data"})
+                return make_response({"status":False,"detail":"Address Not found"})
             data = [user.to_json(user) for user in address]
             return make_response({"status":True,"detail":data})
         except Exception as e:
@@ -17,9 +17,9 @@ class AddressView(Resource):
     def post(self):
         try:
             data=request.get_json()
-            create_user = UserAddressModel(data)
-            UserAddressModel.add(create_user)
-            data=create_user.to_json(create_user)
+            create_user_address = UserAddressModel(data)
+            UserAddressModel.add(create_user_address)
+            data=create_user_address.to_json(create_user_address)
             return make_response({"status":True,"detail":"User Address Add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -29,7 +29,7 @@ class Addressdetails(Resource):
         try:
             address = UserAddressModel.query.get(id) 
             if not address:
-                return make_response({"status": False, "details": "Address Not In Data"})
+                return make_response({"status": False, "details": "Address Not found"})
             data=address.to_json(address)
             return make_response({"status":True,"detail":data})
         except Exception as e:
@@ -54,6 +54,6 @@ class Addressdetails(Resource):
         try:
             address = UserAddressModel.query.get_or_404(id)
             UserAddressModel.delete(address)
-            return make_response({"Status":True,"detail":"User Data Delete"})
+            return make_response({"Status":True,"detail":"Address Delete"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

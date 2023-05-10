@@ -1,6 +1,6 @@
 from flask import make_response,request
 from model import ProductModel
-from flask_restful import Resource,marshal_with
+from flask_restful import Resource
 from datetime import datetime
 
 class ProductView(Resource):
@@ -17,9 +17,9 @@ class ProductView(Resource):
     def post(self):
         try:
             data=request.get_json()
-            create_user = ProductModel(data)
-            ProductModel.add(create_user)
-            data=create_user.to_json(create_user)
+            add_product = ProductModel(data)
+            ProductModel.add(add_product)
+            data=add_product.to_json(add_product)
             return make_response({"status":True,"detail":"Product Add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -51,8 +51,8 @@ class ProductDetails(Resource):
         
     def delete(self,id):
         try:
-            user = ProductModel.query.get_or_404(id)
-            ProductModel.delete(user)
+            product = ProductModel.query.get_or_404(id)
+            ProductModel.delete(product)
             return make_response({"Status":True,"detail":"Product Data Delete"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

@@ -2,12 +2,12 @@ from flask import Flask,Blueprint
 from flask_restful import Api
 from model import db
 from flask_migrate import Migrate
-from user_blueprint.user import Index,UserView,UpdateUser
-from category_bluprint.category import CategoryView,UpdateCategory
-from product_blueprint.product import  ProductView,ProductDetails
-from address_blupeprint.address import AddressView,Addressdetails
-from order_blueprint.order import OrderPlacement,OrderPlacementDetails
-from order_item_blueprint.order_item import OrderItemDetails
+from v1_blueprint.user import Index,UserView,UpdateUser
+from v1_blueprint.category import CategoryView,UpdateCategory
+from v1_blueprint.product import  ProductView,ProductDetails
+from v1_blueprint.address import AddressView,Addressdetails
+from v1_blueprint.order import OrderPlacement,OrderPlacementDetails,OrderStatus,OrderStatusCounts
+from v1_blueprint.order_item import OrderItemDetails
 
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123@localhost/demo'
@@ -35,8 +35,9 @@ api.add_resource(AddressView,'/address')
 api.add_resource(Addressdetails,'/address/<int:id>')
 api.add_resource(OrderPlacement,'/order')
 api.add_resource(OrderPlacementDetails,'/order/<int:id>')
+api.add_resource(OrderStatus,'/order/<int:id>/status')
 api.add_resource(OrderItemDetails,'/order_item')
-
+api.add_resource(OrderStatusCounts, '/order/count/<int:id>')
 
 if __name__=='__main__':
     app.run(debug=True, port=3000) 
