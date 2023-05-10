@@ -22,4 +22,3 @@ class OrderItemDetails(Resource):
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
-
