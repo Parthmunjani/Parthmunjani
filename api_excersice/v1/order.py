@@ -1,6 +1,6 @@
 from flask import make_response
 from flask_restful import Resource,request
-from app.models.model import OrderModel,OrderItemModel,CategoryModel
+from api_excersice.models.model import OrderModel,OrderItemModel,CategoryModel
 
 class OrderPlacement(Resource):
     def get(self):

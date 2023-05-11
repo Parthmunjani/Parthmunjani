@@ -1,6 +1,6 @@
 from flask import make_response,request
 from flask_restful import Resource
-from app.models.model import OrderItemModel
+from api_excersice.models.model import OrderItemModel
 
 class OrderItemDetails(Resource):
     def get(self):

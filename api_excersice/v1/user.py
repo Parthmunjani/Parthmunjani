@@ -1,4 +1,4 @@
-from app.models.model import UserModel,OrderModel,OrderItemModel,ProductModel
+from api_excersice.models.model import UserModel,OrderModel,OrderItemModel,ProductModel
 from flask import make_response,request
 from flask_restful import Resource
 from datetime import datetime
