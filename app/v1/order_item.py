@@ -1,6 +1,6 @@
 from flask import make_response,request
 from flask_restful import Resource
-from model import OrderItemModel
+from app.models.model import OrderItemModel
 
 class OrderItemDetails(Resource):
     def get(self):

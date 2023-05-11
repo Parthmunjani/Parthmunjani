@@ -1,13 +1,13 @@
 from flask import Flask,Blueprint
 from flask_restful import Api
-from model import db
+from app.models.model import db
 from flask_migrate import Migrate
-from views.user import UserView,UpdateUser
-from views.category import CategoryView,UpdateCategory
-from views.product import  ProductView,ProductDetails
-from views.address import AddressView,Addressdetails
-from views.order import OrderPlacement,OrderPlacementDetails,OrderStatus,OrderStatusCounts
-from views.order_item import OrderItemDetails
+from app.v1.user import UserView,UpdateUser
+from app.v1.category import CategoryView,UpdateCategory
+from app.v1.product import  ProductView,ProductDetails
+from app.v1.address import AddressView,Addressdetails
+from app.v1.order import *
+from app.v1.order_item import OrderItemDetails
 
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123@localhost/demo'

@@ -1,5 +1,5 @@
 from flask import make_response,request
-from model import ProductModel
+from app.models.model import ProductModel
 from flask_restful import Resource
 from datetime import datetime
 

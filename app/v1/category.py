@@ -1,4 +1,4 @@
-from model import CategoryModel
+from app.models.model import CategoryModel
 from flask import make_response,request
 from flask_restful import Resource
 
