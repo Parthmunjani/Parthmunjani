@@ -2,7 +2,7 @@ from flask import make_response
 from flask_restful import Resource,request
 from app.models.model import OrderModel,OrderItemModel,CategoryModel
 
-class OrderPlacement(Resource):
+class Orders(Resource):
     def get(self):
         try:
             orders = OrderModel.query.all()
@@ -23,7 +23,7 @@ class OrderPlacement(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
     
-class OrderPlacementDetails(Resource):
+class Order(Resource):
     def get(self,id):
         try:
             orders = OrderModel.query.filter_by(user_id=id).all()

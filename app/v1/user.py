@@ -4,7 +4,7 @@ from flask_restful import Resource
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
-class UserView(Resource):
+class Users(Resource):
     def get(self): 
         try:
             users = UserModel.query.all()
@@ -16,11 +16,8 @@ class UserView(Resource):
             return make_response({"status":False,"detail":str(e)})
             
     def post(self):
-        if request.content_type == 'application/json':
-            data = request.json
-        else:
-            data = request.form
         try:
+            data=request.form.get()
             file = request.files.get("id_proof_document")
             if not file:
                 return make_response({"status": False, "detail": "Document is required"})
@@ -36,7 +33,7 @@ class UserView(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
                        
-class UpdateUser(Resource):
+class User(Resource):
     def get(self,id):
         try:
             user = UserModel.query.get(id)

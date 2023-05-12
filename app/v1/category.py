@@ -2,7 +2,7 @@ from app.models.model import CategoryModel
 from flask import make_response,request
 from flask_restful import Resource
 
-class CategoryView(Resource):
+class Categorys(Resource):
     def get(self):
         try:
             categories = CategoryModel.query.filter(CategoryModel.parent_id.is_(None)).all()
@@ -24,30 +24,6 @@ class CategoryView(Resource):
         data['child_categories'] = child_categories
         return data
 
-    """def get(self): 
-        try:
-            categories = CategoryModel.query.filter(CategoryModel.parent_id.is_(None)).all()
-            result = []
-            for category in categories:
-                data = category.to_json()
-                data['total_products'] = len(category.products)
-                child_categories = []
-                for child in category.children:
-                    child_data = child.to_json()
-                    child_data['total_products'] = len(child.products)
-                    grandchild_categories = []
-                    for grandchild in child.children:
-                        grandchild_data = grandchild.to_json()
-                        grandchild_data['total_products'] = len(grandchild.products)
-                        grandchild_categories.append(grandchild_data)
-                    child_data['child_categories'] = grandchild_categories
-                    child_categories.append(child_data)
-                data['child_categories'] = child_categories
-                result.append(data)
-            return make_response({"details":True,"data":result})
-        except Exception as e:
-            return make_response({"status":False,"detail":str(e)})"""
-
     def post(self):
         try:
             data=request.get_json()
@@ -60,7 +36,7 @@ class CategoryView(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
         
-class UpdateCategory(Resource):
+class Category(Resource):
     def get(self,id):
         try:
             category = CategoryModel.query.get(id) 

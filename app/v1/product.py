@@ -3,7 +3,7 @@ from app.models.model import ProductModel
 from flask_restful import Resource
 from datetime import datetime
 
-class ProductView(Resource):
+class Products(Resource):
     def get(self):
         try:
             products = ProductModel.query.all()
@@ -24,7 +24,7 @@ class ProductView(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
         
-class ProductDetails(Resource):
+class Product(Resource):
     def get(self,id):
         try:
             products = ProductModel.query.get(id) 
