@@ -161,6 +161,7 @@ class OrderModel(db.Model,Change):
     def __init__(self, data):
         self.user_id=data.get('user_id')
         self.payment_status = data.get('payment_status')
+        self.category_id=data.get('category_id')
         self.total_price=data.get('total_price')
         self.address_id=data.get('address_id')
         self.status=data.get('status')
