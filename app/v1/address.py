@@ -24,7 +24,7 @@ class AddressView(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
     
-class Addressdetails(Resource):
+class Address(Resource):
     def get(self,id):
         try:
             address = UserAddressModel.query.get(id) 

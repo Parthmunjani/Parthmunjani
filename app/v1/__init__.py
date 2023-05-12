@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from app.v1.user import Users,User
 from app.v1.category import Categorys,Category
 from app.v1.product import  Product,Products
-from app.v1.address import AddressView,Addressdetails
+from app.v1.address import AddressView,Address
 from app.v1.order import *
 from app.v1.order_item import OrderItemDetails
 
@@ -32,7 +32,7 @@ api.add_resource(Category,'/category/<int:id>')
 api.add_resource(Products,'/product')
 api.add_resource(Product,'/product/<int:id>')
 api.add_resource(AddressView,'/address')
-api.add_resource(Addressdetails,'/address/<int:id>')
+api.add_resource(Address,'/address/<int:id>')
 api.add_resource(Orders,'/order')
 api.add_resource(Order,'/order/<int:id>')
 api.add_resource(OrderStatus,'/order/<int:id>/status')
