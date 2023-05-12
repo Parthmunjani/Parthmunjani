@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import make_response,request
-from api_excersice.models.model import UserAddressModel
+from app.models.model import UserAddressModel
 from datetime import datetime
 
 class AddressView(Resource):
