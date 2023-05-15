@@ -1,6 +1,7 @@
 from flask import make_response
 from flask_restful import Resource,request
 from app.models.model import OrderModel,OrderItemModel,CategoryModel
+from sqlalchemy import func
 
 class Orders(Resource):
     def get(self):
@@ -28,14 +29,14 @@ class Order(Resource):
         try:
             orders = OrderModel.query.filter_by(user_id=id).all()
             if not orders:
-                return make_response({"status": False, "detail": "No Orders Found"})
+                return make_response({"status": False, "detail": "Orders Not Found"})
             order_list = []
             for order in orders:
                 order_data = order.to_json(order)
                 order_data['order_items'] = []
                 order_items = OrderItemModel.query.filter_by(order_id=order.id).all()
                 for item in order_items:
-                    order_item_data = item.to_json(item)
+                    order_item_data = item.to_json()
                     order_data['order_items'].append(order_item_data)
                 order_list.append(order_data)
             return make_response({"status": True, "detail": order_list})
@@ -72,9 +73,14 @@ class OrderStatusCounts(Resource):
             if not category:
                 return make_response({"status":False,"detail":'Category not found'})
             counts = {}
+            status_counts = OrderModel.query.with_entities(OrderModel.status, func.count()).filter_by(category_id=id)\
+            .group_by(OrderModel.status).all()
+            for status, count in status_counts:
+                counts[status] = count
+            """counts = {}
             for status in ['placed', 'paid', 'cancel']:
                 count = OrderModel.query.filter_by(status=status, category_id=id).count()
-                counts[status] = count
+                counts[status] = count"""
             return make_response({"status":True,"details": counts})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

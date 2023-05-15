@@ -45,12 +45,12 @@ class UserModel(db.Model,Change):
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
                     
-    def to_json(self,data):
+    def to_json(self):
         data={
-              "id":data.id,
-              "name":data.name,
-              "email":data.email,
-              "phone_number":data.phone_number
+              "id":self.id,
+              "name":self.name,
+              "email":self.email,
+              "phone_number":self.phone_number
               }
         return data
             
@@ -68,16 +68,16 @@ class CategoryModel(db.Model,Change):
     def __init__(self, data, parent=None):
         self.name = data.get('name')
         self.parent_id = data.get('parent_id')
-        self.parent = parent
+        # self.parent = parent
  
-    def to_json(self):
-        data = {
-            'id': self.id,
-            'name': self.name,
-        }
-        return data
+    """def to_json(self):
+         data = {
+             'id': self.id,
+             'name': self.name,
+         }
+         return data"""
     
-    def to_dict(self):
+    def to_json(self):
         data = {
             'id': self.id,
             'name': self.name,
@@ -101,11 +101,11 @@ class ProductModel(db.Model,Change):
         self.price = data.get('price', 0)
         self.category_id=data.get('category_id')
 
-    def to_json(self,data):
+    def to_json(self):
         data={
-            "name":data.name,
-            "price":data.price,
-            "category_id":data.category_id
+            "name":self.name,
+            "price":self.price,
+            "category_id":self.category_id
         }
         return data
 
@@ -126,12 +126,12 @@ class UserAddressModel(db.Model,Change):
         self.state=data.get('state')
         self.zip=data.get('zip')
         
-    def to_json(self,data):
+    def to_json(self):
         data={
-            "user_id":data.user_id,
-            "street":data.street,
-            "state":data.state,
-            "zip":data.zip
+            "user_id":self.user_id,
+            "street":self.street,
+            "state":self.state,
+            "zip":self.zip
         }
         return data
             
@@ -181,11 +181,11 @@ class OrderItemModel(db.Model,Change):
         self.product_id=data.get('product_id')
         self.quantity=data.get('quantity')
         
-    def to_json(self,data):
+    def to_json(self):
         data={  
-            "order_id":data.order_id,
-            "product_id":data.product_id,
-            "quantity":data.quantity
+            "order_id":self.order_id,
+            "product_id":self.product_id,
+            "quantity":self.quantity
         }
         return data
     

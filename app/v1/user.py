@@ -11,7 +11,7 @@ class Users(Resource):
             users = UserModel.query.all()
             if not users:
                 return make_response({"status":False,"detail":"User Not found"})
-            data = [user.to_json(user) for user in users]
+            data = [user.to_json() for user in users]
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -22,29 +22,28 @@ class Users(Resource):
             file = request.files.get("id_proof_document")
             if not file:
                 return make_response({"status": False, "detail": "Document is required"})
-            if file:
-                filename = secure_filename(file.filename)
-                if filename.split('.')[-1] != 'pdf':
-                    return make_response({"status":False,"details":'Only PDF documents are allowed'})
-                
-                media_dir = "media"
-                if not os.path.exists(media_dir):
-                    os.makedirs(media_dir)
-                
-                file_path = os.path.join("media", filename)
-                file.save(file_path)
+            filename = secure_filename(file.filename)
+            if filename.split('.')[-1] != 'pdf':
+                return make_response({"status":False,"details":'Only PDF documents are allowed'})
+            
+            media_dir = "media"
+            if not os.path.exists(media_dir):
+                os.makedirs(media_dir)
+            
+            file_path = os.path.join("media", filename)
+            file.save(file_path)
 
-                data["id_proof_document"] = file_path
-                create_user = UserModel(data)
-                UserModel.add(create_user)
-                user_data = create_user.to_json(create_user)
-                response_data = {
-                    "status": True,
-                    "detail": "User created successfully",
-                    "user_data": user_data,
-                    "file_path": file_path
-                }
-                return make_response({"status":True,"detail":response_data})
+            data["id_proof_document"] = file_path
+            create_user = UserModel(data)
+            UserModel.add(create_user)
+            user_data = create_user.to_json()
+            response_data = {
+                "status": True,
+                "detail": "User created successfully",
+                "user_data": user_data,
+                "file_path": file_path
+            }
+            return make_response({"status":True,"detail":response_data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
                        
@@ -54,10 +53,10 @@ class User(Resource):
             user = UserModel.query.get(id)
             if not user:
                 return make_response({"status": False, "details": "User Not Registered"})
-            orders = OrderModel.query.filter_by(user_id=id).all()
+            orders = OrderModel.query.filter_by(user_id=id)
             order_details = []
             for order in orders:
-                order_items = OrderItemModel.query.filter_by(order_id=order.id).all()
+                order_items = OrderItemModel.query.filter_by(order_id=order.id)
                 items = []
                 for item in order_items:
                     product = ProductModel.query.get(item.product_id)
@@ -66,19 +65,12 @@ class User(Resource):
                 order_data = { "order_id": order.id,"total_price": order.total_price,
                     "payment_status": order.payment_status,"order_items": items}
                 order_details.append(order_data)
-            user_data = user.to_json(user)
+            user_data = user.to_json()
             user_data["order_details"] = order_details
             return make_response({"status": True, "detail": user_data})
         except Exception as e:
             return make_response({"status": False, "detail": str(e)})
-        """try:
-            users = UserModel.query.get(id) 
-            if not users:
-                return make_response({"status": False, "details": "User Not Register"})
-            data=users.to_json(users)
-            return make_response({"status":True,"detail":data})
-        except Exception as e:
-            return make_response({"status":False,"detail":str(e)})"""
+
     def put(self,id):
         try:
             data = request.form.to_dict()
@@ -90,7 +82,7 @@ class User(Resource):
             user.phone_number=data.get('phone_number')
             user.modified_at=datetime.utcnow()
             UserModel.put()
-            data=user.to_json(user)
+            data=user.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

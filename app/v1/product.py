@@ -9,7 +9,7 @@ class Products(Resource):
             products = ProductModel.query.all()
             if not products:
                 return make_response({"status":False,"detail":"No Data In Table"})
-            data = [product.to_json(product) for product in products]
+            data = [product.to_json() for product in products]
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -19,7 +19,7 @@ class Products(Resource):
             data=request.get_json()
             add_product = ProductModel(data)
             ProductModel.add(add_product)
-            data=add_product.to_json(add_product)
+            data=add_product.to_json()
             return make_response({"status":True,"detail":"Product Add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -44,7 +44,7 @@ class Product(Resource):
             product.category_id=data.get('category_id')
             product.modified_at=datetime.utcnow()
             ProductModel.put()
-            data=product.to_json(product)
+            data=product.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

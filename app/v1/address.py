@@ -6,10 +6,10 @@ from datetime import datetime
 class AddressView(Resource):
     def get(self):
         try:
-            address = UserAddressModel.query.all()
-            if not address:
+            addresses = UserAddressModel.query.all()
+            if not addresses:
                 return make_response({"status":False,"detail":"Address Not found"})
-            data = [user.to_json(user) for user in address]
+            data = [address.to_json() for address in addresses]
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"details":str(e)})
@@ -19,7 +19,7 @@ class AddressView(Resource):
             data=request.get_json()
             create_user_address = UserAddressModel(data)
             UserAddressModel.add(create_user_address)
-            data=create_user_address.to_json(create_user_address)
+            data=create_user_address.to_json()
             return make_response({"status":True,"detail":"User Address Add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -30,7 +30,7 @@ class Address(Resource):
             address = UserAddressModel.query.get(id) 
             if not address:
                 return make_response({"status": False, "details": "Address Not found"})
-            data=address.to_json(address)
+            data=address.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -45,7 +45,7 @@ class Address(Resource):
             address.zip=data.get('zip')
             address.modified_at=datetime.utcnow()
             UserAddressModel.put()
-            data=address.to_json(address)
+            data=address.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

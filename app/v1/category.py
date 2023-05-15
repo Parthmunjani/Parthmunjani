@@ -28,10 +28,11 @@ class Categorys(Resource):
         try:
             data=request.get_json()
             parent_id = data.get('parent_id')
-            parent = CategoryModel.query.filter_by(id=parent_id).first() if parent_id else None
-            create_category = CategoryModel(data, parent)
+            # parent=CategoryModel.query.get(id=parent_id)
+            # parent = CategoryModel.query.filter_by(id=parent_id).first() if parent_id else None
+            create_category = CategoryModel(data, None)
             CategoryModel.add(create_category)
-            data=create_category.to_json(create_category)
+            data=create_category.to_json()
             return make_response({"status":True,"detail":"Category add Successfully"})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -42,7 +43,7 @@ class Category(Resource):
             category = CategoryModel.query.get(id) 
             if not category:
                 return make_response({"status": False, "details": "Category Not Available"})
-            data = category.to_dict()
+            data = category.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})

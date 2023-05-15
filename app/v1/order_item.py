@@ -8,7 +8,7 @@ class OrderItemDetails(Resource):
             order_iteam = OrderItemModel.query.all()
             if not order_iteam:
                 return make_response({"status":False,"detail":"No Data In Table"})
-            data = [user.to_json(user) for user in order_iteam]
+            data = [order.to_json() for order in order_iteam]
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
@@ -18,7 +18,7 @@ class OrderItemDetails(Resource):
             data=request.get_json()
             order_item = OrderItemModel(data)
             OrderItemModel.add(order_item)
-            data=order_item.to_json(order_item)
+            data=order_item.to_json()
             return make_response({"status":True,"detail":data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
