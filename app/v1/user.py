@@ -3,13 +3,14 @@ from flask import make_response,request
 from flask_restful import Resource
 from datetime import datetime
 from werkzeug.utils import secure_filename
+import os
 
 class Users(Resource):
     def get(self): 
         try:
             users = UserModel.query.all()
             if not users:
-                return make_response({"status":False,"detail":"No Data In Table"})
+                return make_response({"status":False,"detail":"User Not found"})
             data = [user.to_json(user) for user in users]
             return make_response({"status":True,"detail":data})
         except Exception as e:
@@ -17,7 +18,7 @@ class Users(Resource):
             
     def post(self):
         try:
-            data=request.form.get()
+            data = request.form.to_dict()
             file = request.files.get("id_proof_document")
             if not file:
                 return make_response({"status": False, "detail": "Document is required"})
@@ -25,11 +26,25 @@ class Users(Resource):
                 filename = secure_filename(file.filename)
                 if filename.split('.')[-1] != 'pdf':
                     return make_response({"status":False,"details":'Only PDF documents are allowed'})
-            
-            create_user = UserModel(data)
-            UserModel.add(create_user)
-            data=create_user.to_json(create_user)
-            return make_response({"status":True,"detail":"User Create Successfully"})
+                
+                media_dir = "media"
+                if not os.path.exists(media_dir):
+                    os.makedirs(media_dir)
+                
+                file_path = os.path.join("media", filename)
+                file.save(file_path)
+
+                data["id_proof_document"] = file_path
+                create_user = UserModel(data)
+                UserModel.add(create_user)
+                user_data = create_user.to_json(create_user)
+                response_data = {
+                    "status": True,
+                    "detail": "User created successfully",
+                    "user_data": user_data,
+                    "file_path": file_path
+                }
+                return make_response({"status":True,"detail":response_data})
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})
                        
@@ -65,11 +80,8 @@ class User(Resource):
         except Exception as e:
             return make_response({"status":False,"detail":str(e)})"""
     def put(self,id):
-        if request.content_type == 'application/json':
-            data = request.json
-        else:
-            data = request.form
         try:
+            data = request.form.to_dict()
             user = UserModel.query.filter_by(id=id).first()
             if not user:
                 return make_response({"status":False,"details":"User Not Register"})

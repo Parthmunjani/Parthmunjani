@@ -44,21 +44,13 @@ class UserModel(db.Model,Change):
                     self.id_proof_document = f.read()
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
-            
-        """if "id_proof_document" in data:
-            file = data["id_proof_document"]
-            if file:
-                filename = secure_filename(file.filename)
-                file.save(os.path.join("media", filename))
-                with open(os.path.join("media", filename), "rb") as f:
-                    self.id_proof_document = f.read()"""
                     
     def to_json(self,data):
         data={
               "id":data.id,
               "name":data.name,
               "email":data.email,
-              "phone_number":data.phone_number,
+              "phone_number":data.phone_number
               }
         return data
             
@@ -101,7 +93,6 @@ class ProductModel(db.Model,Change):
     name = db.Column(db.String(50), nullable=False)
     price = db.Column(db.Float(),nullable=True, default=0)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    #category = db.relationship('CategoryModel', backref=db.backref('product', lazy=True))
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     modified_at=db.Column(db.DateTime,default=datetime.utcnow)
 
