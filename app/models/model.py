@@ -24,6 +24,7 @@ class UserModel(db.Model,Change):
     uuid = db.Column(db.String(36),nullable=False, default=str(uuid4()))
     name = db.Column(db.String(255))
     email = db.Column(db.String(255))
+    password = db.Column(db.String(255))
     phone_number = db.Column(db.String(20))
     id_proof_document = db.Column(db.LargeBinary())
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -34,6 +35,7 @@ class UserModel(db.Model,Change):
         self.name=data.get("name")
         self.email=data.get("email")
         self.phone_number=data.get("phone_number")
+        self.password=data.get("password")
             
         file = request.files.get("id_proof_document")
         if file:
@@ -45,6 +47,9 @@ class UserModel(db.Model,Change):
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
                     
+    def check_password(self, password):
+        return self.password == password
+    
     def to_json(self):
         data={
               "id":self.id,

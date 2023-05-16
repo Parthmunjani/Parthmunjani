@@ -1,4 +1,4 @@
-from app.v1 import app
+from app.v1.views import app
 
 
 if __name__=='__main__':

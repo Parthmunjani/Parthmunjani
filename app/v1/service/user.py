@@ -1,30 +1,27 @@
 from app.models.model import UserModel,OrderModel,OrderItemModel,ProductModel
-from flask import make_response,request
-from flask_restful import Resource
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 
-class Users(Resource):
-    def get(self): 
+class UserService:
+    def get_all_users():
         try:
             users = UserModel.query.all()
             if not users:
-                return make_response({"status":False,"detail":"User Not found"})
+                return {"status": False, "detail": "User Not found"}
             data = [user.to_json() for user in users]
-            return make_response({"status":True,"detail":data})
+            return {"status": True, "detail": data}
         except Exception as e:
-            return make_response({"status":False,"detail":str(e)})
-            
-    def post(self):
+            return {"status": False, "detail": str(e)}
+    
+    def create_user(data, file):
         try:
-            data = request.form.to_dict()
-            file = request.files.get("id_proof_document")
             if not file:
-                return make_response({"status": False, "detail": "Document is required"})
+                return {"status": False, "detail": "Document is required"}
+            
             filename = secure_filename(file.filename)
             if filename.split('.')[-1] != 'pdf':
-                return make_response({"status":False,"details":'Only PDF documents are allowed'})
+                return {"status": False, "detail": "Only PDF documents are allowed"}
             
             media_dir = "media"
             if not os.path.exists(media_dir):
@@ -43,16 +40,16 @@ class Users(Resource):
                 "user_data": user_data,
                 "file_path": file_path
             }
-            return make_response({"status":True,"detail":response_data})
+            return {"status": True, "detail": response_data}
         except Exception as e:
-            return make_response({"status":False,"detail":str(e)})
-                       
-class User(Resource):
-    def get(self,id):
+            return {"status": False, "detail": str(e)}
+    
+    def get_user(id):
         try:
             user = UserModel.query.get(id)
             if not user:
-                return make_response({"status": False, "details": "User Not Registered"})
+                return {"status": False, "detail": "User Not Registered"}
+            
             orders = OrderModel.query.filter_by(user_id=id)
             order_details = []
             for order in orders:
@@ -60,37 +57,37 @@ class User(Resource):
                 items = []
                 for item in order_items:
                     product = ProductModel.query.get(item.product_id)
-                    product_data = { "name": product.name,"price": product.price,"quantity": item.quantity }
+                    product_data = {"name": product.name, "price": product.price, "quantity": item.quantity}
                     items.append(product_data)
-                order_data = { "order_id": order.id,"total_price": order.total_price,
-                    "payment_status": order.payment_status,"order_items": items}
+                order_data = {"order_id": order.id, "total_price": order.total_price,
+                              "payment_status": order.payment_status, "order_items": items}
                 order_details.append(order_data)
             user_data = user.to_json()
             user_data["order_details"] = order_details
-            return make_response({"status": True, "detail": user_data})
+            return {"status": True, "detail": user_data}
         except Exception as e:
-            return make_response({"status": False, "detail": str(e)})
-
-    def put(self,id):
+            return {"status": False, "detail": str(e)}
+    
+    def update_user(id, data):
         try:
-            data = request.form.to_dict()
             user = UserModel.query.filter_by(id=id).first()
             if not user:
-                return make_response({"status":False,"details":"User Not Register"})
+                return {"status": False, "detail": "User Not Registered"}
+            
             user.name = data.get('name')
             user.email = data.get('email')
-            user.phone_number=data.get('phone_number')
-            user.modified_at=datetime.utcnow()
+            user.phone_number = data.get('phone_number')
+            user.modified_at = datetime.utcnow()
             UserModel.put()
-            data=user.to_json()
-            return make_response({"status":True,"detail":data})
+            data = user.to_json()
+            return {"status": True, "detail": data}
         except Exception as e:
-            return make_response({"status":False,"detail":str(e)})
-
-    def delete(self,id):
+            return {"status": False, "detail": str(e)}
+    
+    def delete_user(id):
         try:
             user = UserModel.query.get_or_404(id)
             UserModel.delete(user)
-            return make_response({"Status":True,"detail":"User Data Delete"})
+            return {"status": True, "detail": "User Data Delete"}
         except Exception as e:
-            return make_response({"status":False,"detail":str(e)})
+            return {"status": False, "detail": str(e)}
