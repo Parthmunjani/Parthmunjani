@@ -4,6 +4,9 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from uuid import uuid4
 import os
+import bcrypt
+from passlib.hash import pbkdf2_sha256
+from werkzeug.security import generate_password_hash,check_password_hash
 
 db=SQLAlchemy()
 
@@ -16,7 +19,7 @@ class Change:
         db.session.commit()    
     def put():
         db.session.commit()
-
+            
 class UserModel(db.Model,Change):
     __tablename__="user"
     
@@ -35,7 +38,7 @@ class UserModel(db.Model,Change):
         self.name=data.get("name")
         self.email=data.get("email")
         self.phone_number=data.get("phone_number")
-        self.password=data.get("password")
+        self.set_password(data.get("password"))
             
         file = request.files.get("id_proof_document")
         if file:
@@ -46,9 +49,23 @@ class UserModel(db.Model,Change):
                     self.id_proof_document = f.read()
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
-                    
+                
+    def set_password(self, password):
+        hashed_password = generate_password_hash(password)
+        self.password = hashed_password
+
     def check_password(self, password):
-        return self.password == password
+        return check_password_hash(password,self.password)
+                    
+    """def set_password(self, password):
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        self.password = hashed_password.decode("utf-8")
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))"""
+
+    """def check_password(self, password):
+        return self.password == password"""
     
     def to_json(self):
         data={

@@ -1,36 +1,33 @@
 from datetime import datetime
 from app.models.model import ProductModel
+from app.v1.service.data_service import DataService
 
-class ProductService:
-    def get_all_products():
+
+class ProductService:    
+    def all_product(self):
         try:
-            products = ProductModel.query.all()
-            if not products:
-                return {"status": False, "detail": "No Data In Table"}
-            data = [product.to_json() for product in products]
-            return {"status": True, "detail": data}
+            all_service = DataService(ProductModel).get_all_data()
+            return {"status": True, "detail": all_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def add_product(data):
+    def new_product(self,data):
         try:
-            add_product = ProductModel(data)
-            ProductModel.add(add_product)
-            return {"status": True, "detail": "Product Add Successfully"}
+            product_service=DataService(ProductModel).create_data(data)
+            return {"status": True, "detail": product_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def get_product(id):
+    def get_product(self,id):
         try:
-            product = ProductModel.query.get(id) 
-            if not product:
-                return {"status": False, "details": "Product Not Added"}
-            data = product.to_json()
-            return {"status": True, "detail": data}
+            product_service=DataService(ProductModel).get_all_data(id)
+            if not product_service:
+                return {"status": False, "details": "Product Not Found"}, 400
+            return {"status": True, "detail": product_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
-    
-    def update_product(id, data):
+            return {"status": False, "detail": str(e)}, 400
+        
+    def update_product(self,id, data):
         try:
             product = ProductModel.query.get(id)
             product.price = data.get('price')
@@ -39,14 +36,13 @@ class ProductService:
             product.modified_at = datetime.utcnow()
             ProductModel.put()
             data = product.to_json()
-            return {"status": True, "detail": data}
+            return {"status": True, "detail": data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def delete_product(id):
+    def delete_product(self,id):
         try:
-            product = ProductModel.query.get_or_404(id)
-            ProductModel.delete(product)
-            return {"status": True, "detail": "Product Data Delete"}
+            product_service=DataService(ProductModel).delete_data(id)
+            return {"status": True, "detail": "Product Data Delete"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400

@@ -1,27 +1,25 @@
-from app.models.model import UserModel,OrderModel,OrderItemModel,ProductModel
+from app.models.model import UserModel,OrderItemModel,OrderModel,ProductModel
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+from app.v1.service.data_service import DataService
 
 class UserService:
-    def get_all_users():
+    def get_users(self):
         try:
-            users = UserModel.query.all()
-            if not users:
-                return {"status": False, "detail": "User Not found"}
-            data = [user.to_json() for user in users]
-            return {"status": True, "detail": data}
+            all_service = DataService(UserModel).get_all_data()
+            return {"status": True, "detail": all_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def create_user(data, file):
+    def add_user(self,data,file):
         try:
             if not file:
-                return {"status": False, "detail": "Document is required"}
+                return {"status": False, "detail": "Document is required"}, 400
             
             filename = secure_filename(file.filename)
             if filename.split('.')[-1] != 'pdf':
-                return {"status": False, "detail": "Only PDF documents are allowed"}
+                return {"status": False, "detail": "Only PDF documents are allowed"}, 400
             
             media_dir = "media"
             if not os.path.exists(media_dir):
@@ -40,15 +38,15 @@ class UserService:
                 "user_data": user_data,
                 "file_path": file_path
             }
-            return {"status": True, "detail": response_data}
+            return {"status": True, "detail": response_data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
-    
-    def get_user(id):
+            return {"status": False, "detail": str(e)}, 400
+                
+    def get_user_by_id(self,id):
         try:
-            user = UserModel.query.get(id)
+            user =UserModel.query.get(id)
             if not user:
-                return {"status": False, "detail": "User Not Registered"}
+                return {"status": False, "detail": "User Not Registered"},400
             
             orders = OrderModel.query.filter_by(user_id=id)
             order_details = []
@@ -64,15 +62,15 @@ class UserService:
                 order_details.append(order_data)
             user_data = user.to_json()
             user_data["order_details"] = order_details
-            return {"status": True, "detail": user_data}
+            return {"status": True, "detail": user_data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
-    
-    def update_user(id, data):
+            return {"status": False, "detail": str(e)}, 400
+        
+    def update_user_details(self,id,data):
         try:
             user = UserModel.query.filter_by(id=id).first()
             if not user:
-                return {"status": False, "detail": "User Not Registered"}
+                return {"status": False, "detail": "User Not Registered"}, 400
             
             user.name = data.get('name')
             user.email = data.get('email')
@@ -80,14 +78,13 @@ class UserService:
             user.modified_at = datetime.utcnow()
             UserModel.put()
             data = user.to_json()
-            return {"status": True, "detail": data}
+            return {"status": True, "detail": data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
-    
-    def delete_user(id):
+            return {"status": False, "detail": str(e)}, 400
+
+    def remove_user(self,id):
         try:
-            user = UserModel.query.get_or_404(id)
-            UserModel.delete(user)
-            return {"status": True, "detail": "User Data Delete"}
+            all_service = DataService(UserModel).delete_data(id)
+            return {"status": True, "detail": "User Data Delete"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400

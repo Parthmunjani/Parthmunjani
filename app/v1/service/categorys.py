@@ -1,16 +1,18 @@
 from app.models.model import CategoryModel
+from app.v1.service.data_service import DataService
+from app.v1.schema.catrgotyschema import category_schema
 
 class CategoryService:
-    def get_all_categories():
+    def get_all_categories(self):
         try:
-            categories = CategoryModel.query.filter(CategoryModel.parent_id.is_(None)).all()
+            categories =CategoryModel.query.filter(CategoryModel.parent_id.is_(None)).all()
             result = []
             for category in categories:
                 data = CategoryService.get_category_data(category)
                 result.append(data)
-            return {"status": True, "detail":result}
+            return {"status": True, "detail":result}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
     def get_category_data(category):
         data = category.to_json()
@@ -22,29 +24,28 @@ class CategoryService:
         data['child_categories'] = child_categories
         return data
 
-    def create_category(data):
+    def create_category(self,data):
         try:
             parent_id = data.get('parent_id')
+            
             create_category = CategoryModel(data, parent_id)
             CategoryModel.add(create_category)
-            return {"status": True, "detail": "Category added successfully"}
+            return {"status": True, "detail": "Category added successfully"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
-    def get_category_by_id(id):
+    def get_category_by_id(self,id):
         try:
-            category = CategoryModel.query.get(id) 
-            if not category:
-                return {"status": False, "details": "Category Not Available"}
-            data = category.to_json()
-            return {"status": True, "detail": data}
+            category_service=DataService(CategoryModel).get_all_data(id)
+            if not category_service:
+                return {"status": False, "details": "Category Not Available"}, 400
+            return {"status": True, "detail": category_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
-    def delete_category(id):
+    def delete_category(self,id):
         try:
-            category = CategoryModel.query.get_or_404(id)
-            CategoryModel.delete(category)
-            return {"status": True, "detail": "Category Data Delete"}
+            category_service=DataService(CategoryModel).delete_data(id)
+            return {"status": True, "detail": "Category Data Delete"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400

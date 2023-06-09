@@ -1,0 +1,17 @@
+gets all order
+---
+tags:
+  - Orders
+parameters:
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
+
+responses:
+  404:
+    description: Invalid Request
+  200:
+    description: Order list
+
+

@@ -1,32 +1,27 @@
 from app.models.model import OrderModel, OrderItemModel, CategoryModel
-from flask import make_response
 from sqlalchemy import func
+from app.v1.service.data_service import DataService
 
 class OrderService:
-    def get_all_orders():
+    def get_orders(self):
         try:
-            orders = OrderModel.query.all()
-            if not orders:
-                return {"status": False, "detail": "No Data In Table"}
-            data = [order.to_json(order) for order in orders]
-            return {"status": True, "detail": data}
+            all_service = DataService(OrderModel).get_all_data()
+            return {"status": True, "detail": all_service}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def create_order(data):
+    def creates_order(self,data):
         try:
-            create_order = OrderModel(data)
-            OrderModel.add(create_order)
-            data = create_order.to_json(create_order)
-            return {"status": True, "detail": "Your Order Placed Successfully"}
+            order_service=DataService(OrderModel).create_data(data)
+            return {"status": True, "detail": "Your Order Placed Successfully"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def get_orders_by_user_id(id):
+    def get_order(self,id):
         try:
             orders = OrderModel.query.filter_by(user_id=id).all()
             if not orders:
-                return {"status": False, "detail": "Orders Not Found"}
+                return {"status": False, "detail": "Orders Not Found"}, 400
             
             order_list = []
             for order in orders:
@@ -37,38 +32,38 @@ class OrderService:
                     order_item_data = item.to_json()
                     order_data['order_items'].append(order_item_data)
                 order_list.append(order_data)
-            return {"status": True, "detail": order_list}
+            return {"status": True, "detail": order_list}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def get_order_status(id):
+    def get_order_status(self, id):
         try:
             order = OrderModel.query.get(id)
             if not order:
-                return {"status": False, "details": "Order Not found"}
+                return {"status": False, "details": "Order Not found"}, 400
             
             data = order.to_json(order)
-            return {"status": True, "detail": data}
+            return {"status": True, "detail": data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
     
-    def update_order_status(id, status):
+    def update_order_status(self, id, status):
         try:
             order = OrderModel.query.get(id)
             if not order:
-                return {"status": False, "details": "Order not found"}
+                return {"status": False, "details": "Order not found"}, 400
             
             order.status = status
             OrderModel.put()
-            return {"status": True, "details": "Order status updated successfully"}
+            return {"status": True, "details": "Order status updated successfully"}, 200
         except Exception as e:
-            return {"status": False, "details": str(e)}
+            return {"status": False, "details": str(e)}, 400
     
-    def get_order_status_counts(id):
+    def get_order_status_counts(self, id):
         try:
             category = CategoryModel.query.get(id)
             if not category:
-                return {"status": False, "detail": 'Category not found'}
+                return {"status": False, "detail": 'Category not found'}, 400
             
             counts = {}
             status_counts = (
@@ -81,6 +76,6 @@ class OrderService:
             for status, count in status_counts:
                 counts[status] = count
             
-            return {"status": True, "details": counts}
+            return {"status": True, "detail": counts}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400

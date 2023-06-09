@@ -1,41 +1,35 @@
 from app.models.model import UserAddressModel
 from datetime import datetime
+from app.v1.service.data_service import DataService
 
 class AddressService:
-    def get_all_addresses():
+    def get_all_addresses(self):
         try:
-            addresses = UserAddressModel.query.all()
-            if not addresses:
-                return {"status": False, "detail": "Address Not found"}
-            data = [address.to_json() for address in addresses]
-            return {"status": True, "detail": data}
+            all_service = DataService(UserAddressModel).get_all_data()
+            return {"status": True, "detail": all_service}, 200
         except Exception as e:
-            return {"status": False, "details": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
-    def create_address(data):
+    def create_address(self,data):
         try:
-            create_user_address = UserAddressModel(data)
-            UserAddressModel.add(create_user_address)
-            data = create_user_address.to_json()
-            return {"status": True, "detail": "User Address Add Successfully"}
+            print(data)
+            address_service=DataService(UserAddressModel).create_data(data)
+            return {"status": True, "detail": "User Address Add Successfully"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
-    def get_address_by_id(id):
+    def get_address_by_id(self,id):
+        try:
+            address_service=DataService(UserAddressModel).get_all_data(id)
+            return {"status": True, "detail": address_service}, 200
+        except Exception as e:
+            return {"status": False, "detail": str(e)}, 400
+
+    def update_address(self,id, data):
         try:
             address = UserAddressModel.query.get(id)
             if not address:
-                return {"status": False, "details": "Address Not found"}
-            data = address.to_json()
-            return {"status": True, "detail": data}
-        except Exception as e:
-            return {"status": False, "detail": str(e)}
-
-    def update_address(id, data):
-        try:
-            address = UserAddressModel.query.get(id)
-            if not address:
-                return {"status": False, "details": "Address Not found"}
+                return {"status": False, "details": "Address Not found"}, 400
             address.state = data.get('state')
             address.street = data.get('street')
             address.user_id = data.get('user_id')
@@ -43,14 +37,13 @@ class AddressService:
             address.modified_at = datetime.utcnow()
             UserAddressModel.put()
             data = address.to_json()
-            return {"status": True, "detail": data}
+            return {"status": True, "detail": data}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400
 
-    def delete_address(id):
+    def delete_address(self,id):
         try:
-            address = UserAddressModel.query.get_or_404(id)
-            UserAddressModel.delete(address)
-            return {"status": True, "detail": "Address Delete"}
+            address_service=DataService(UserAddressModel).delete_data(id)
+            return {"status": True, "detail": "Address Delete"}, 200
         except Exception as e:
-            return {"status": False, "detail": str(e)}
+            return {"status": False, "detail": str(e)}, 400

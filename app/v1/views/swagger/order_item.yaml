@@ -1,0 +1,36 @@
+tags:
+  - Order Items
+paths:
+  /order-items:
+    get:
+      summary: Get all order items
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: boolean
+              detail:
+                type: array
+                items:
+                  $ref: '#/definitions/OrderItemModel'
+    post:
+      summary: Create a new order item
+      parameters:
+        - in: body
+          name: data
+          description: Order item data
+          schema:
+            $ref: '#/definitions/OrderItemModel'
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              status:
+                type: boolean
+              detail:
+                $ref: '#/definitions/OrderItemModel'

@@ -1,42 +1,65 @@
 from flask import make_response, request
 from app.v1.service.product import ProductService
 from flask_restful import Resource
+from app.v1.schema.productschema import product_schema
+from flask_jwt_extended import jwt_required
+from flasgger import swag_from
+from app.v1.views.swagger.swagger import route
 
 class Products(Resource):
+    @swag_from(str(route)+"/product.yaml", methods=["GET"])
+    @jwt_required()
     def get(self):
         try:
-            response = ProductService.get_all_products()
-            return make_response({"status":True,"details":response})
+            product_service,status_code=ProductService().all_product()
+            return {"status":True,"details":product_service['detail']},status_code
         except Exception as e:
-            return make_response({"status":True,"detail":str(e)})
-            
+            return {"status":True,"detail":str(e)}, 400
+        
+    @swag_from(str(route)+"/product.yaml", methods=["POST"])
+    @jwt_required()        
     def post(self):
         try:
+            product_service=ProductService()
             data = request.get_json()
-            response = ProductService.add_product(data)
-            return make_response({"status":True,"details":response})
+            errors = []
+            for field in product_schema["required"]:
+                if field not in data:
+                    errors.append(f"'{field}' is required.")
+            if errors:
+                return {"status": False, "details": errors}, 400
+            response,status_code = product_service.new_product(data)
+            return {"status":True,"details":response['detail']}, status_code
         except Exception as e:
-            return make_response({"status":True,"detail":str(e)})
+            return {"status":True,"detail":str(e)}, 400
 
 class Product(Resource):
+    @swag_from(str(route)+"/product.yaml", methods=["GET"])
+    @jwt_required()
     def get(self, id):
         try:
-            response = ProductService.get_product(id)
-            return make_response({"status":True,"details":response})
+            product_service=ProductService()
+            response, status_code = product_service.get_product(id)
+            return {"status":True,"details":response['detail']}, status_code
         except Exception as e:
-            return make_response({"status":True,"detail":str(e)})
-            
+            return {"status":True,"detail":str(e)}, 400
+     
+    @swag_from(str(route)+"/product.yaml", methods=["PUT"]) 
+    @jwt_required()
     def put(self, id):
-        try:
+        try:    
+            product_service=ProductService()
             data = request.get_json()
-            response = ProductService.update_product(id, data)
-            return make_response({"status":True,"details":response})
+            response,status_code = product_service.update_product(id, data)
+            return {"status":True,"details":response['detail']},status_code
         except Exception as e:
-            return make_response({"status":True,"detail":str(e)})
+            return {"status":True,"detail":str(e)}, 400
         
+    @swag_from(str(route)+"/product.yaml", methods=["DELETE"])    
+    @jwt_required()    
     def delete(self, id):
         try:
-            response = ProductService.delete_product(id)
-            return make_response({"status":True,"details":response})
+            product_service,ststus_code=ProductService().delete_product(id)
+            return {"status":True,"details":product_service['detail']},ststus_code
         except Exception as e:
-            return make_response({"status":True,"detail":str(e)})
+            return {"status":True,"detail":str(e)}, 400
