@@ -7,7 +7,8 @@ from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 
 class Products(Resource):
-    @swag_from(str(route)+"/product.yaml", methods=["GET"])
+    print(route)
+    @swag_from(str(route)+"/product/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
@@ -16,7 +17,7 @@ class Products(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
         
-    @swag_from(str(route)+"/product.yaml", methods=["POST"])
+    @swag_from(str(route)+"/product/post_product.yaml")
     @jwt_required()        
     def post(self):
         try:
@@ -34,7 +35,7 @@ class Products(Resource):
             return {"status":True,"detail":str(e)}, 400
 
 class Product(Resource):
-    @swag_from(str(route)+"/product.yaml", methods=["GET"])
+    @swag_from(str(route)+"/product/get_by_id.yaml")
     @jwt_required()
     def get(self, id):
         try:
@@ -44,7 +45,7 @@ class Product(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
      
-    @swag_from(str(route)+"/product.yaml", methods=["PUT"]) 
+    #@swag_from(str(route)+"/product.yaml", methods=["PUT"]) 
     @jwt_required()
     def put(self, id):
         try:    
@@ -55,7 +56,7 @@ class Product(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
         
-    @swag_from(str(route)+"/product.yaml", methods=["DELETE"])    
+    @swag_from(str(route)+"/product/delete_by_id.yaml")    
     @jwt_required()    
     def delete(self, id):
         try:

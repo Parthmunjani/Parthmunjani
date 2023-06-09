@@ -7,7 +7,7 @@ from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 
 class Orders(Resource):
-    @swag_from(str(route)+"/order.yaml", methods=['GET'])
+    @swag_from(str(route)+"/order/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
@@ -16,7 +16,7 @@ class Orders(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    @swag_from(str(route)+"/order.yaml", methods=['POST'])
+    #@swag_from(str(route)+"/order.yaml", methods=['POST'])
     def post(self):
         try:
             order_service = OrderService()
@@ -33,7 +33,7 @@ class Orders(Resource):
             return {"status":True,"detail":str(e)}, 400
 
 class Order(Resource):
-    @swag_from(str(route)+"/order.yaml", methods=['GET'])
+    @swag_from(str(route)+"/order/get_by_id.yaml")
     @jwt_required()
     def get(self, id):
         try:
@@ -43,7 +43,7 @@ class Order(Resource):
             return {"status":True,"detail":str(e)}, 400
 
 class OrderStatus(Resource):
-    @swag_from(str(route)+"/order.yaml", methods=['GET'])
+    #@swag_from(str(route)+"/order.yaml", methods=['GET'])
     @jwt_required()
     def get(self, id):
         try:
@@ -52,7 +52,7 @@ class OrderStatus(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    @swag_from(str(route)+"/order.yaml", methods=['PUT'])
+    #@swag_from(str(route)+"/order.yaml", methods=['PUT'])
     @jwt_required()
     def put(self, id):
         try:
@@ -65,7 +65,7 @@ class OrderStatus(Resource):
             return {"status":True,"detail":str(e)}, 400
 
 class OrderStatusCounts(Resource):
-    @swag_from(str(route)+"/order.yaml", methods=['GET'])
+    #@swag_from(str(route)+"/order.yaml", methods=['GET'])
     @jwt_required()
     def get(self, id):
         try:

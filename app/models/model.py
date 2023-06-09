@@ -135,7 +135,7 @@ class UserAddressModel(db.Model,Change):
     __tablename__="user_address"
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))   
     street = db.Column(db.String(200), nullable=False)
     state = db.Column(db.String(50), nullable=False)
     zip = db.Column(db.String(10), nullable=False)

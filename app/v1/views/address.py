@@ -7,24 +7,10 @@ from app.v1.validation.address import UserAddressSchema
 from app.v1.schema.addressschema import user_address_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
+from app.v1.views.swagger.swagger import route
 
 class Addresses(Resource):
-    @swag_from({
-        'tags': ['Addresses'],
-        'summary': 'Get all addresses',
-        'responses': {
-            200: {
-                'description': 'OK',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'status': {'type': 'boolean'},
-                        'details': {'$ref': '#/definitions/AddressModel'}
-                    }
-                }
-            }
-        }
-    })
+    @swag_from(str(route)+"/address/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
@@ -33,30 +19,7 @@ class Addresses(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    @swag_from({
-        'tags': ['Addresses'],
-        'summary': 'Create a new address',
-        'parameters': [
-            {
-                'in': 'body',
-                'name': 'data',
-                'description': 'Address data',
-                'schema': {'$ref': '#/definitions/AddressModel'}
-            }
-        ],
-        'responses': {
-            200: {
-                'description': 'OK',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'status': {'type': 'boolean'},
-                        'details': {'type': 'string'}
-                    }
-                }
-            }
-        }
-    })
+    @swag_from(str(route)+"/address/post_address.yaml")
     def post(self):
         try:
             address_service = AddressService()
@@ -76,31 +39,7 @@ class Addresses(Resource):
             return {"status": False, "detail": str(e)}, 400
         
 class Address(Resource):
-    @swag_from({
-        'tags': ['Addresses'],
-        'summary': 'Get address by ID',
-        'parameters': [
-            {
-                'name': 'id',
-                'in': 'path',
-                'type': 'integer',
-                'required': True,
-                'description': 'ID of the address'
-            }
-        ],
-        'responses': {
-            200: {
-                'description': 'OK',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'status': {'type': 'boolean'},
-                        'details': {'$ref': '#/definitions/AddressModel'}
-                    }
-                }
-            }
-        }
-    })
+    @swag_from(str(route)+"/address/get_by_id.yaml")
     @jwt_required()
     def get(self, id):
         try:
@@ -109,37 +48,7 @@ class Address(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
         
-    @swag_from({
-        'tags': ['Addresses'],
-        'summary': 'Update address by ID',
-        'parameters': [
-            {
-                'name': 'id',
-                'in': 'path',
-                'type': 'integer',
-                'required': True,
-                'description': 'ID of the address'
-            },
-            {
-                'in': 'body',
-                'name': 'data',
-                'description': 'Address data',
-                'schema': {'$ref': '#/definitions/AddressModel'}
-            }
-        ],
-        'responses': {
-            200: {
-                'description': 'OK',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'status': {'type': 'boolean'},
-                        'details': {'type': 'string'}
-                    }
-                }
-            }
-        }
-    })    
+       
     @jwt_required()
     def put(self, id):
         try:
@@ -150,31 +59,7 @@ class Address(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    @swag_from({
-        'tags': ['Addresses'],
-        'summary': 'Delete address by ID',
-        'parameters': [
-            {
-                'name': 'id',
-                'in': 'path',
-                'type': 'integer',
-                'required': True,
-                'description': 'ID of the address'
-            }
-        ],
-        'responses': {
-            200: {
-                'description': 'OK',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'status': {'type': 'boolean'},
-                        'details': {'type': 'string'}
-                    }
-                }
-            }
-        }
-    })
+    @swag_from(str(route)+"/address/delete_by_id.yaml")
     @jwt_required()
     def delete(self, id):
         try:

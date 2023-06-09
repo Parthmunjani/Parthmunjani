@@ -10,7 +10,7 @@ from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 
 class Users(Resource):
-    @swag_from(str(route)+"/user.yaml")
+    @swag_from(str(route)+"/user/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
@@ -37,7 +37,7 @@ class Users(Resource):
             return {"status":True,"detail":str(e)}, 400
 
 class User(Resource):
-    # @swag_from(str(route)+"/user.yaml", methods=["GET"])
+    @swag_from(str(route)+"/user/get_by_id.yaml")
     @jwt_required()
     def get(self, id):
         try:
@@ -57,7 +57,7 @@ class User(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
           
-    @swag_from(str(route)+"/user.yaml", methods=["DELETE"])
+    @swag_from(str(route)+"/user/delete_by_id.yaml")
     @jwt_required()
     def delete(self, id):
         try:

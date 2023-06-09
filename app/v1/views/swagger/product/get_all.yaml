@@ -1,0 +1,128 @@
+gets all product
+---
+tags:
+  - Products
+# parameters:
+#   - name: Authorization
+#     in: header
+#     description: an authorization header
+#     required: true
+
+responses:
+  404:
+    description: Invalid Request
+  200:
+    description: Product list
+
+
+# swagger: "2.0"
+# info:
+#   version: "1.0.0"
+#   title: "Product API"
+# paths:
+#   /products:
+#     get:
+#       tags:
+#         - "Products"
+#       summary: "Get all products"
+#       responses:
+#         200:
+#           description: "OK"
+#           schema:
+#             type: "object"
+#             properties:
+#               status:
+#                 type: "boolean"
+#               details:
+#                 type: "array"
+#                 items:
+#                   $ref: "#/definitions/ProductModel"
+#     post:
+#       tags:
+#         - "Products"
+#       summary: "Create a new product"
+#       parameters:
+#         - in: "body"
+#           name: "data"
+#           description: "Product data"
+#           schema:
+#             $ref: "#/definitions/ProductModel"
+#       responses:
+#         200:
+#           description: "OK"
+#           schema:
+#             type: "object"
+#             properties:
+#               status:
+#                 type: "boolean"
+#               details:
+#                 type: "string"
+#   /products/{id}:
+#     get:
+#       tags:
+#         - "Products"
+#       summary: "Get product by ID"
+#       parameters:
+#         - name: "id"
+#           in: "path"
+#           type: "integer"
+#           required: true
+#           description: "ID of the product"
+#       responses:
+#         200:
+#           description: "OK"
+#           schema:
+#             type: "object"
+#             properties:
+#               status:
+#                 type: "boolean"
+#               details:
+#                 $ref: "#/definitions/ProductModel"
+#     put:
+#       tags:
+#         - "Products"
+#       summary: "Update product by ID"
+#       parameters:
+#         - name: "id"
+#           in: "path"
+#           type: "integer"
+#           required: true
+#           description: "ID of the product"
+#         - in: "body"
+#           name: "data"
+#           description: "Product data"
+#           schema:
+#             $ref: "#/definitions/ProductModel"
+#       responses:
+#         200:
+#           description: "OK"
+#           schema:
+#             type: "object"
+#             properties:
+#               status:
+#                 type: "boolean"
+#               details:
+#                 type: "string"
+#     delete:
+#       tags:
+#         - "Products"
+#       summary: "Delete product by ID"
+#       parameters:
+#         - name: "id"
+#           in: "path"
+#           type: "integer"
+#           required: true
+#           description: "ID of the product"
+#       responses:
+#         200:
+#           description: "OK"
+#           schema:
+#             type: "object"
+#             properties:
+#               status:
+#                 type: "boolean"
+#               details:
+#                 type: "string"
+
+# tags:
+#   - name: "Products"

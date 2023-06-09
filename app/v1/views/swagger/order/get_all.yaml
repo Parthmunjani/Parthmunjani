@@ -2,11 +2,11 @@ gets all order
 ---
 tags:
   - Orders
-parameters:
-  - name: Authorization
-    in: header
-    description: an authorization header
-    required: true
+# parameters:
+#   - name: Authorization
+#     in: header
+#     description: an authorization header
+#     required: true
 
 responses:
   404:

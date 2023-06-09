@@ -1,0 +1,122 @@
+gets all category
+---
+tags:
+  - Category
+# parameters:
+#   - name: Authorization
+#     in: header
+#     description: an authorization header
+#     required: true
+
+responses:
+  404:
+    description: Invalid Request
+  200:
+    description: Category list
+
+
+# swagger: "2.0"
+# info:
+#   title: Category API
+#   description: API for managing categories and products
+#   version: "1.0"
+# host: localhost:5000
+# basePath: /api/v1
+# schemes:
+#   - http
+# consumes:
+#   - application/json
+# produces:
+#   - application/json
+# definitions:
+#   CategoryModel:
+#     type: object
+#     properties:
+#       id:
+#         type: integer
+#       name:
+#         type: string
+#       parent_id:
+#         type: integer
+#       children:
+#         type: array
+#         items:
+#           $ref: '#/definitions/CategoryModel'
+#       products:
+#         type: array
+#         items:
+#           $ref: '#/definitions/ProductModel'
+#       created_at:
+#         type: string
+#         format: date-time
+#       modified_at:
+#         type: string
+#         format: date-time
+#     required:
+#       - name
+
+#   ProductModel:
+#     type: object
+#     properties:
+#       id:
+#         type: integer
+#       name:
+#         type: string
+#       category_id:
+#         type: integer
+#       price:
+#         type: number
+#         format: float
+#       created_at:
+#         type: string
+#         format: date-time
+#       modified_at:
+#         type: string
+#         format: date-time
+#     required:
+#       - name
+#       - category_id
+#       - price
+
+# paths:
+#   /categories:
+#     get:
+#       tags:
+#         - Categories
+#       summary: Get all categories
+#       responses:
+#         200:
+#           description: OK
+#           schema:
+#             type: object
+#             properties:
+#               status:
+#                 type: boolean
+#               details:
+#                 type: array
+#                 items:
+#                   $ref: '#/definitions/CategoryModel'
+#     post:
+#       tags:
+#         - Categories
+#       summary: Create a new category
+#       parameters:
+#         - in: body
+#           name: data
+#           description: Category data
+#           schema:
+#             $ref: '#/definitions/CategoryModel'
+#       responses:
+#         200:
+#           description: OK
+#           schema:
+#             type: object
+#             properties:
+#               status:
+#                 type: boolean
+#               details:
+#                 type: string
+
+# tags:
+#   - name: "Categories"
+

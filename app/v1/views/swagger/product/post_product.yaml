@@ -1,0 +1,46 @@
+tags:
+  - Products
+parameters:
+  # - name: Authorization
+  #   in: header
+  #   description: An authorization header
+  #   required: true
+  - in: body
+    name: body
+    description: Product object
+    required: true
+
+responses:
+  404:
+    description: Invalid Request
+  201:
+    description: Product created successfully
+  401:
+    description: Unauthorized
+
+definitions:
+  ProductInput:
+    type: object
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      category_id:
+        type: integer
+    required:
+      - name
+      - category_id
+  
+  ProductOutput:
+    type: object
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+      category_id:
+        type: integer
+    required:
+      - name
+      - category_id

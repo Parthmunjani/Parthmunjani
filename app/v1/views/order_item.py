@@ -6,7 +6,7 @@ from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 
 class OrderItemDetails(Resource):
-    @swag_from(str(route)+"/order_item.yaml", methods=['GET'])
+    @swag_from(str(route)+"/order_item/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
@@ -18,7 +18,7 @@ class OrderItemDetails(Resource):
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
     
-    @swag_from(str(route)+"/order_item.yaml", methods=['POST'])     
+    #@swag_from(str(route)+"/order_item.yaml", methods=['POST'])     
     def post(self):
         try:
             data=request.get_json()

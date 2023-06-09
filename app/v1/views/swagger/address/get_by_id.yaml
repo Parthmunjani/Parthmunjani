@@ -1,0 +1,16 @@
+tags:
+  - Addresses
+parameters:
+  - name: id
+    in: path
+    description: ID of the Address
+    required: true
+  # - name: Authorization
+  #   in: header
+  #   description: an authorization header
+  #   required: true
+responses:
+  404:
+    description: Invalid Request
+  200:
+    description: Address

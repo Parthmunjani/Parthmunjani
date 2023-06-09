@@ -1,0 +1,54 @@
+tags:
+  - Addresses
+parameters:
+  # - name: Authorization
+  #   in: header
+  #   description: An authorization header
+  #   required: true
+  - in: body
+    name: body
+    description: User address object
+    required: true
+
+responses:
+  404:
+    description: Invalid Request
+  201:
+    description: User address created successfully
+  401:
+    description: Unauthorized
+
+definitions:
+  UserAddressInput:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      street:
+        type: string
+      state:
+        type: string
+      zip:
+        type: string
+    required:
+      - user_id
+      - street
+      - state
+      - zip
+  
+  UserAddressOutput:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      street:
+        type: string
+      state:
+        type: string
+      zip:
+        type: string
+    required:
+      - user_id
+      - street
+      - state
+      - zip
