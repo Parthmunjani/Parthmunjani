@@ -10,7 +10,9 @@ from app.v1.views.order import *
 from app.v1.views.order_item import OrderItemDetails
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
-
+from app.v1.views.swagger.swagger import swagger_config,template
+from app.v1.views.search import ProductSearch
+    
 jwt = JWTManager()
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123@localhost/demo'
@@ -23,52 +25,6 @@ db.init_app(app)
 jwt.init_app(app)
 migrate=Migrate(app,db)
 
-template = {
-    "swagger": "2.0",
-    "info": {
-        "title": "XYZ API Docs",
-        "description": "API Documentation for XYZ Application",
-        "contact": {
-            "responsibleOrganization": "",
-            "responsibleDeveloper": "",
-            "email": "XYZ@XYZ.com",
-            "url": "XYZ.com",
-        },
-        "termsOfService": "XYZ .com",
-        "version": "1.0"
-    },
-    "securityDefinitions": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header",
-            "description": "\
-            JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
-        }
-    },
-    "security": [
-        {
-            "Bearer": []
-        }
-    ]
-}
-
-swagger_config = {
-    "headers": [
-
-        ],
-    "specs": [
-        {
-            "endpoint": 'apispec',
-            "route": '/apispec.json',
-            "rule_filter": lambda rule: True,  # all in
-            "model_filter": lambda tag: True,  # all in
-        }
-    ],
-    "static_url_path": "/flasgger_static",
-    "swagger_ui": True,
-
-}
 swagger = Swagger(app, config=swagger_config, template=template)
 
 """with app.app_context():
@@ -94,3 +50,4 @@ api.add_resource(Order,'/order/<int:id>')
 api.add_resource(OrderStatus,'/order/<int:id>/status')
 api.add_resource(OrderItemDetails,'/order_item')
 api.add_resource(OrderStatusCounts, '/order/count/<int:id>')
+api.add_resource(ProductSearch, '/users/search')

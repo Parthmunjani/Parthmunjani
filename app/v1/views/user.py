@@ -17,7 +17,7 @@ class Users(Resource):
             user_service,status_code=UserService().get_users()
             return {"status":True,"details":user_service['detail']},status_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
         
     # @swag_from(str(route)+"/user.yaml", methods=["POST"])
     def post(self):
@@ -34,7 +34,7 @@ class Users(Resource):
             response,ststus_code = user_service.add_user(data, file)
             return {"status":True,"details":response},ststus_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
 
 class User(Resource):
     @swag_from(str(route)+"/user/get_by_id.yaml")
@@ -44,7 +44,7 @@ class User(Resource):
             user_service,status_code=UserService().get_user_by_id(id)
             return {"status":True,"details":user_service['detail']},status_code
         except Exception as e:
-            return {"status":True,"detail":str(e)},400
+            return {"status":False,"detail":str(e)},400
           
     # @swag_from(str(route)+"/user.yaml", methods=["PUT"])   
     @jwt_required()
@@ -55,7 +55,7 @@ class User(Resource):
             response,ststus_code = user_service.update_user_details(id,data)
             return {"status":True,"details":response},ststus_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
           
     @swag_from(str(route)+"/user/delete_by_id.yaml")
     @jwt_required()
@@ -64,7 +64,7 @@ class User(Resource):
             user_service,ststus_code=UserService().remove_user(id)
             return {"status":True,"details":user_service},ststus_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
 
 class AuthLogin(Resource):
     def post(self):
