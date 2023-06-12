@@ -8,14 +8,14 @@ class ProductSearch(Resource):
             search_term = request.args.get('search_term')
             sort_order = request.args.get('sort_order')
             page = int(request.args.get('page', 1)) 
-            
-            per_page = int(request.args.get('per_page', 10)) 
+             
             query = ProductModel.query.filter(ProductModel.name.like('%' + search_term + '%'))
             if sort_order == 'low_to_high':
                 query = query.order_by(ProductModel.price.asc())
             elif sort_order == 'high_to_low':
                 query = query.order_by(ProductModel.price.desc())
 
+            per_page = int(request.args.get('per_page', 10))
             offset = (page - 1) * per_page # for product show in page 
             paginated_query = query.offset(offset).limit(per_page)
             results = paginated_query.all()
