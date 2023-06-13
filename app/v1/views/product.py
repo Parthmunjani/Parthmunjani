@@ -5,17 +5,40 @@ from app.v1.schema.productschema import product_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
+from app.models.model import ProductModel,CategoryModel
 
 class Products(Resource):
-    print(route)
+    #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
     @jwt_required()
     def get(self):
         try:
-            product_service,status_code=ProductService().all_product()
-            return {"status":True,"details":product_service['detail']},status_code
+            search_term = request.args.get('search_term')
+            sort_order = request.args.get('sort_order')
+            page = int(request.args.get('page', 1))
+             
+            query = ProductModel.query
+            if search_term:
+                query = query.filter(
+                    (ProductModel.name.like('%' + search_term + '%')) |
+                    (ProductModel.category.has(CategoryModel.name.like('%' + search_term + '%')))
+                )
+            if sort_order == '-':
+                query = query.order_by(ProductModel.price.asc())
+            elif sort_order == '+':
+                query = query.order_by(ProductModel.price.desc())
+
+            per_page = int(request.args.get('per_page', 10))
+            offset = (page - 1) * per_page # for product show in page
+            paginated_query = query.offset(offset).limit(per_page)
+            results = paginated_query.all()
+            if not results:
+                return {"status": False, "detail": "Product Not Found"}
+
+            serialized_results = [product.to_json() for product in results]
+            return {"status": True, "details": serialized_results}, 200
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status": False, "detail": str(e)}, 400
         
     @swag_from(str(route)+"/product/post_product.yaml")
     @jwt_required()        

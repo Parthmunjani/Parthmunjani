@@ -2,12 +2,23 @@ gets all product
 ---
 tags:
   - Products
-# parameters:
-#   - name: Authorization
-#     in: header
-#     description: an authorization header
-#     required: true
-
+parameters:
+        - name: search_term
+          in: query
+          description: Search term for filtering products
+          required: false
+        - name: sort_order
+          in: query
+          description: Sort order for the products (use '-' for ascending, '+' for descending)
+          required: false
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+        - name: per_page
+          in: query
+          description: Number of products per page
+          required: false  
 responses:
   404:
     description: Invalid Request

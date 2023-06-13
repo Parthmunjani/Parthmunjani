@@ -11,7 +11,6 @@ from app.v1.views.order_item import OrderItemDetails
 from flask_jwt_extended import JWTManager
 from flasgger import Swagger
 from app.v1.views.swagger.swagger import swagger_config,template
-from app.v1.views.search import ProductSearch
     
 jwt = JWTManager()
 app=Flask(__name__)
@@ -50,4 +49,3 @@ api.add_resource(Order,'/order/<int:id>')
 api.add_resource(OrderStatus,'/order/<int:id>/status')
 api.add_resource(OrderItemDetails,'/order_item')
 api.add_resource(OrderStatusCounts, '/order/count/<int:id>')
-api.add_resource(ProductSearch, '/users/search')

@@ -5,10 +5,10 @@ parameters:
     in: path
     description: ID of the product
     required: true
-  # - name: Authorization
-  #   in: header
-  #   description: an authorization header
-  #   required: true
+  - name: Authorization
+    in: header
+    description: an authorization header
+    required: true
 responses:
   404:
     description: Invalid Request
