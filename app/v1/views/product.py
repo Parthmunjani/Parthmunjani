@@ -33,7 +33,7 @@ class Products(Resource):
             paginated_query = query.offset(offset).limit(per_page)
             results = paginated_query.all()
             if not results:
-                return {"status": False, "detail": "Product Not Found"}
+                return {"status": False, "detail": "Product Not Found"},400
 
             serialized_results = [product.to_json() for product in results]
             return {"status": True, "details": serialized_results}, 200
