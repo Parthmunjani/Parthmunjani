@@ -55,7 +55,7 @@ class Products(Resource):
             response,status_code = product_service.new_product(data)
             return {"status":True,"details":response['detail']}, status_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
 
 class Product(Resource):
     @swag_from(str(route)+"/product/get_by_id.yaml")
@@ -77,7 +77,7 @@ class Product(Resource):
             response,status_code = product_service.update_product(id, data)
             return {"status":True,"details":response['detail']},status_code
         except Exception as e:
-            return {"status":True,"detail":str(e)}, 400
+            return {"status":False,"detail":str(e)}, 400
         
     @swag_from(str(route)+"/product/delete_by_id.yaml")    
     @jwt_required()    

@@ -122,12 +122,15 @@ class ProductModel(db.Model,Change):
         self.name = data.get('name')
         self.price = data.get('price', 0)
         self.category_id=data.get('category_id')
+        self.created_at = datetime.utcnow()
 
     def to_json(self):
         data={
             "name":self.name,
             "price":self.price,
-            "category_id":self.category_id
+            "category_id":self.category_id,
+            # "created_at": self.created_at,
+            # "modified_at": self.modified_at 
         }
         return data
 
