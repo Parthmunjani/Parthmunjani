@@ -36,7 +36,7 @@ class Products(Resource):
 
             if sort_order == '+':
                 query += " ORDER BY price ASC"
-            elif sort_order == '-':
+            elif sort_order == '-': 
                 query += " ORDER BY price DESC"
             offset = (page - 1) * per_page
             query += f" OFFSET {offset} LIMIT {per_page}"
@@ -54,8 +54,8 @@ class Products(Resource):
         product = {
             "id": row[0],
             "name": row[1],
-            "category": row[2],
-            "price": row[3]
+            #"category": row[1],
+            "price": row[2]
         }
         return product
 
