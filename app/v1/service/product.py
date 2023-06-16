@@ -42,9 +42,9 @@ class ProductService:
             conn = psycopg2.connect(
             host='localhost',
             port='5432',
-            database='demo',
-            user='db_user',
-            password='123456'
+            database='demo2',
+            user='myuser',
+            password='password'
             )
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM product WHERE id = %s", (id,))
@@ -67,9 +67,9 @@ class ProductService:
             conn = psycopg2.connect(
                 host='localhost',
                 port='5432',
-                database='demo',
-                user='db_user',
-                password='123456'
+                database='demo2',
+                user='my_user',
+                password='password'
             )
             cursor = conn.cursor()
             cursor.execute(
@@ -89,9 +89,9 @@ class ProductService:
             conn = psycopg2.connect(
             host='localhost',
             port='5432',
-            database='demo',
-            user='db_user',
-            password='123456'
+            database='demo2',
+            user='myuser',
+            password='password'
             )
             cursor = conn.cursor()
             cursor.execute("DELETE FROM product WHERE id = %s", (id,))

@@ -14,7 +14,7 @@ from app.v1.views.swagger.swagger import swagger_config,template
     
 jwt = JWTManager()
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://postgres:123@localhost/demo'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://myuser:password@localhost/demo2'
 app.config['JWT_SECRET_KEY'] = '1313'
 api = Api(app)
 jwt = JWTManager(app)

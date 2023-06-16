@@ -11,7 +11,7 @@ from app.v1.views.swagger.swagger import route
 
 class Addresses(Resource):
     @swag_from(str(route)+"/address/get_all.yaml")
-    @jwt_required()
+    #jwt_required()
     def get(self):
         try:
             address_service,status_code=AddressService().get_all_addresses()
@@ -30,9 +30,9 @@ class Addresses(Resource):
                     errors.append(f"'{field}' is required.")
             if errors:
                 return {"status": False, "details": errors}, 400
-            user_data = DataService(UserAddressModel).get_all_data(id=data.get('user_id'))
+            """user_data = DataService(UserAddressModel).get_all_data(id=data.get('user_id'))
             if not user_data:
-                return {"status": False, "detail": "User does not exist"}, 400
+                return {"status": False, "detail": "User does not exist"}, 400"""
             response, status_code = address_service.create_address(data)
             return {"status": True, "details": response['detail']}, status_code
         except Exception as e:

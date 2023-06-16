@@ -11,7 +11,7 @@ from app.v1.views.swagger.swagger import route
 
 class Users(Resource):
     @swag_from(str(route)+"/user/get_all.yaml")
-    @jwt_required()
+    #@jwt_required()
     def get(self):
         try:
             user_service,status_code=UserService().get_users()

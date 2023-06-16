@@ -6,42 +6,62 @@ from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 from app.models.model import ProductModel,CategoryModel
-
+import psycopg2
 class Products(Resource):
     #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
-    @jwt_required()
+    #@jwt_required()
     def get(self):
         try:
+            conn = psycopg2.connect(
+                host='localhost',
+                port='5432',
+                database='demo2',
+                user='myuser',
+                password='password'
+            )
+            cursor = conn.cursor()
+
             search_term = request.args.get('search_term')
             sort_order = request.args.get('sort_order')
             page = int(request.args.get('page', 1))
-             
-            query = ProductModel.query
-            if search_term:
-                query = query.filter(
-                    (ProductModel.name.like('%' + search_term + '%')) |
-                    (ProductModel.category.has(CategoryModel.name.like('%' + search_term + '%')))
-                )
-            if sort_order == '-':
-                query = query.order_by(ProductModel.price.asc())
-            elif sort_order == '+':
-                query = query.order_by(ProductModel.price.desc())
-
             per_page = int(request.args.get('per_page', 10))
-            offset = (page - 1) * per_page # for product show in page
-            paginated_query = query.offset(offset).limit(per_page)
-            results = paginated_query.all()
-            if not results:
-                return {"status": False, "detail": "Product Not Found"},400
 
-            serialized_results = [product.to_json() for product in results]
+            query = "SELECT * FROM product WHERE 1=1"
+            params = []
+
+            if search_term:
+                query += " AND (name ILIKE %s OR category_id IN (SELECT id FROM category WHERE name ILIKE %s))"
+                params.extend(['%' + search_term + '%', '%' + search_term + '%'])
+
+            if sort_order == '+':
+                query += " ORDER BY price ASC"
+            elif sort_order == '-':
+                query += " ORDER BY price DESC"
+            offset = (page - 1) * per_page
+            query += f" OFFSET {offset} LIMIT {per_page}"
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            conn.close()
+            if not results:
+                return {"status": False, "detail": "Product Not Found"}, 400
+            serialized_results = [self._serialize_product(row) for row in results]
             return {"status": True, "details": serialized_results}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
-        
+
+    def _serialize_product(self, row):
+        product = {
+            "id": row[0],
+            "name": row[1],
+            "category": row[2],
+            "price": row[3]
+        }
+        return product
+
+
     @swag_from(str(route)+"/product/post_product.yaml")
-    @jwt_required()        
+    #@jwt_required()        
     def post(self):
         try:
             product_service=ProductService()
@@ -59,7 +79,7 @@ class Products(Resource):
 
 class Product(Resource):
     @swag_from(str(route)+"/product/get_by_id.yaml")
-    @jwt_required()
+    #@jwt_required()
     def get(self, id):
         try:
             product_service=ProductService()

@@ -54,8 +54,8 @@ class UserModel(db.Model,Change):
         hashed_password = generate_password_hash(password)
         self.password = hashed_password
 
-    def check_password(self, password):
-        return check_password_hash(password,self.password)
+    """def check_password(self, password):
+        return check_password_hash(password,self.password)"""
                     
     """def set_password(self, password):
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
@@ -64,8 +64,8 @@ class UserModel(db.Model,Change):
     def check_password(self, password):
         return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))"""
 
-    """def check_password(self, password):
-        return self.password == password"""
+    def check_password(self, password):
+        return self.password == password
     
     def to_json(self):
         data={
