@@ -1,7 +1,7 @@
 from app.models.model import UserAddressModel
 from datetime import datetime
 from app.v1.service.data_service import DataService
-
+import psycopg2
 class AddressService:
     def get_all_addresses(self):
         try:
@@ -41,9 +41,21 @@ class AddressService:
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
 
-    def delete_address(self,id):
+    def delete_address(self, id):
         try:
-            address_service=DataService(UserAddressModel).delete_data(id)
+            conn = psycopg2.connect(
+                host='localhost',
+                port='5432',
+                database='demo2',
+                user='myuser',
+                password='password'
+            )
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM user_address WHERE id = %s", (id,))
+            conn.commit()
+            conn.close()
+            # address_service = DataService(UserAddressModel).delete_data(id)
             return {"status": True, "detail": "Address Delete"}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
+

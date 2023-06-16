@@ -3,7 +3,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from app.v1.service.data_service import DataService
-
+import psycopg2
 class UserService:
     def get_users(self):
         try:
@@ -82,9 +82,21 @@ class UserService:
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
 
-    def remove_user(self,id):
+    def remove_user(self, id):
         try:
-            all_service = DataService(UserModel).delete_data(id)
+            conn = psycopg2.connect(
+                host='localhost',
+                port='5432',
+                database='demo2',
+                user='myuser',
+                password='password'
+            )
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM user WHERE id = %s", (id,))
+            conn.commit()
+            conn.close()
+            # all_service = DataService(UserModel).delete_data(id)
             return {"status": True, "detail": "User Data Delete"}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
+
