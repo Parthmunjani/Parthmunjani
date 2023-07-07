@@ -6,10 +6,16 @@ class DataService:
     def __init__(self,model):
         self._model=model
         
-    def get_all_data(self, id=None):
-        if id is None:
-            return [item.to_json() for item in self._model.query.all()]
-        return [item.to_json() for item in self._model.query.filter_by(id=id).all()]
+    async def get_all_data(self, id=None):
+        try:
+            query = self._model.query
+            if id is not None:
+                query = query.filter_by(id=id)
+            result = query.all()
+            data = [item.to_json() for item in result]
+            return data
+        except Exception as e:
+            return {"status": False, "detail": str(e)}, 400
         """data = self._model.query.filter_by(id=id).first()
         
         if not data:

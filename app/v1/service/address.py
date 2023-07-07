@@ -3,9 +3,9 @@ from datetime import datetime
 from app.v1.service.data_service import DataService
 import psycopg2
 class AddressService:
-    def get_all_addresses(self):
+    async def get_all_addresses(self):
         try:
-            all_service = DataService(UserAddressModel).get_all_data()
+            all_service = await DataService(UserAddressModel).get_all_data()
             return {"status": True, "detail": all_service}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400

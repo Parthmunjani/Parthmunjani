@@ -1,6 +1,6 @@
 from flask import  request
 from app.v1.service.order import OrderService
-from flask_restful import Resource
+from flask_restful import Resource,reqparse
 from app.v1.schema.orderschema import order_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
@@ -9,9 +9,9 @@ from app.v1.views.swagger.swagger import route
 class Orders(Resource):
     @swag_from(str(route)+"/order/get_all.yaml")
     @jwt_required()
-    def get(self):
+    async def get(self):
         try:
-            order_service,status_code = OrderService().get_orders()
+            order_service,status_code = await OrderService().get_orders()
             return {"status":True,"details":order_service['detail']},status_code
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400

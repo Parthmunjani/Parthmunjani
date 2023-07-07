@@ -11,10 +11,10 @@ from app.v1.views.swagger.swagger import route
 
 class Addresses(Resource):
     @swag_from(str(route)+"/address/get_all.yaml")
-    #jwt_required()
-    def get(self):
+    @jwt_required()
+    async def get(self):
         try:
-            address_service,status_code=AddressService().get_all_addresses()
+            address_service,status_code= await AddressService().get_all_addresses()
             return {"status":True,"details":address_service['detail']},status_code
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400

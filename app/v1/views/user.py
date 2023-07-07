@@ -8,19 +8,27 @@ from datetime import timedelta
 from flask_restful_swagger import swagger
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
+from queue import Queue
 
 class Users(Resource):
     @swag_from(str(route)+"/user/get_all.yaml")
-    #@jwt_required()
-    def get(self):
+    @jwt_required()
+    async def get(self):
         try:
-            user_service,status_code=UserService().get_users()
-            return {"status":True,"details":user_service['detail']},status_code
+            async def get_users_async(result):
+                result["data"] = await UserService().get_users()
+            result = {}
+            await get_users_async(result)
+            if "data" in result:
+                user_service, status_code = result["data"]
+                return {"status": True, "details": user_service['detail']}, status_code
+            else:
+                return {"status": False, "detail": "Failed to get user data"}, 400
         except Exception as e:
-            return {"status":False,"detail":str(e)}, 400
+            return {"status": False, "detail": str(e)}, 400
         
     # @swag_from(str(route)+"/user.yaml", methods=["POST"])
-    def post(self):
+    async def post(self):
         try:
             user_service=UserService()
             data = request.form.to_dict()
@@ -31,7 +39,7 @@ class Users(Resource):
                     errors.append(f"'{field}' is required.")
             if errors:
                 return {"status": False, "details": errors}, 400
-            response,ststus_code = user_service.add_user(data, file)
+            response,ststus_code = await user_service.add_user(data, file)
             return {"status":True,"details":response},ststus_code
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
@@ -39,12 +47,19 @@ class Users(Resource):
 class User(Resource):
     @swag_from(str(route)+"/user/get_by_id.yaml")
     @jwt_required()
-    def get(self, id):
+    async def get(self, id):
         try:
-            user_service,status_code=UserService().get_user_by_id(id)
-            return {"status":True,"details":user_service['detail']},status_code
+            async def get_user_by_id_async(result):
+                result["data"] = await UserService().get_user_by_id(id)
+            result = {}
+            await get_user_by_id_async(result)
+            if "data" in result:
+                user_service, status_code = result["data"]
+                return {"status": True, "details": user_service['detail']}, status_code
+            else:
+                return {"status": False, "detail": "Failed to get user by ID"}, 400
         except Exception as e:
-            return {"status":False,"detail":str(e)},400
+            return {"status": False, "detail": str(e)}, 400
           
     # @swag_from(str(route)+"/user.yaml", methods=["PUT"])   
     @jwt_required()
@@ -72,13 +87,12 @@ class AuthLogin(Resource):
             data = request.get_json()
             user = UserModel.query.filter_by(email=data['email']).first()
             if user and user.check_password(data['password']):
-                print(user)
-                access_token = create_access_token(identity=user.id,expires_delta=timedelta(hours=1))
-                return make_response({"status":True,"access_token":access_token})
+                access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=1))
+                return make_response({"status": True, "access_token": access_token})
             else:
-                return make_response({"status": False,"detail": "Invalid email or password"})
+                return make_response({"status": False, "detail": "Invalid email or password"})
         except Exception as e:
-            return make_response({"status": False,"detail":str(e)})
+            return make_response({"status": False, "detail": str(e)})
     
 class TokenRefresh(Resource):
     @jwt_required(refresh=True)

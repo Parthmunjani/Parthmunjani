@@ -8,7 +8,7 @@ from app.v1.views.swagger.swagger import route
 
 class Categories(Resource):
     @swag_from(str(route)+"/category/get_all.yaml")
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             categoty_service,status_code=CategoryService().get_all_categories()

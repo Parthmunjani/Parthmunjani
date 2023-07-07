@@ -10,7 +10,7 @@ import psycopg2
 class Products(Resource):
     #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         try:
             conn = psycopg2.connect(
@@ -27,11 +27,16 @@ class Products(Resource):
             page = int(request.args.get('page', 1))
             per_page = int(request.args.get('per_page', 10))
 
-            query = "SELECT * FROM product WHERE 1=1"
+            query = """
+                SELECT p.*
+                FROM product p
+                LEFT JOIN category c ON p.category_id = c.id
+                WHERE 1 = 1
+            """
             params = []
 
             if search_term:
-                query += " AND (name ILIKE %s OR category_id IN (SELECT id FROM category WHERE name ILIKE %s))"
+                query += " AND (p.name ILIKE %s OR c.name ILIKE %s)"
                 params.extend(['%' + search_term + '%', '%' + search_term + '%'])
 
             if sort_order == '+':
@@ -61,7 +66,6 @@ class Products(Resource):
 
 
     @swag_from(str(route)+"/product/post_product.yaml")
-    #@jwt_required()        
     def post(self):
         try:
             product_service=ProductService()
@@ -79,7 +83,7 @@ class Products(Resource):
 
 class Product(Resource):
     @swag_from(str(route)+"/product/get_by_id.yaml")
-    #@jwt_required()
+    @jwt_required()
     def get(self, id):
         try:
             product_service=ProductService()

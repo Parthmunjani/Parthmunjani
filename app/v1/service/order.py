@@ -3,9 +3,9 @@ from sqlalchemy import func
 from app.v1.service.data_service import DataService
 from flask import request
 class OrderService:
-    def get_orders(self):
+    async def get_orders(self):
         try:
-            all_service = DataService(OrderModel).get_all_data()
+            all_service = await DataService(OrderModel).get_all_data()
             return {"status": True, "detail": all_service}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400

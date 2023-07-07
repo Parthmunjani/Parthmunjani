@@ -5,9 +5,9 @@ import os
 from app.v1.service.data_service import DataService
 import psycopg2
 class UserService:
-    def get_users(self):
+    async def get_users(self):
         try:
-            all_service = DataService(UserModel).get_all_data()
+            all_service = await DataService(UserModel).get_all_data()
             return {"status": True, "detail": all_service}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
@@ -42,29 +42,30 @@ class UserService:
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
                 
-    def get_user_by_id(self,id):
+    async def get_user_by_id(self, id):
         try:
-            user =UserModel.query.get(id)
+            user = UserModel.query.get(id)
             if not user:
-                return {"status": False, "detail": "User Not Registered"},400
+                return {"status": False, "detail": "User Not Registered"}, 400
             
-            orders = OrderModel.query.filter_by(user_id=id)
+            orders =  OrderModel.query.filter_by(user_id=id).all()
             order_details = []
             for order in orders:
-                order_items = OrderItemModel.query.filter_by(order_id=order.id)
+                order_items = await OrderItemModel.query.filter_by(order_id=order.id).all()
                 items = []
                 for item in order_items:
-                    product = ProductModel.query.get(item.product_id)
+                    product = await ProductModel.query.get(item.product_id)
                     product_data = {"name": product.name, "price": product.price, "quantity": item.quantity}
                     items.append(product_data)
                 order_data = {"order_id": order.id, "total_price": order.total_price,
-                              "payment_status": order.payment_status, "order_items": items}
+                            "payment_status": order.payment_status, "order_items": items}
                 order_details.append(order_data)
             user_data = user.to_json()
             user_data["order_details"] = order_details
             return {"status": True, "detail": user_data}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
+
         
     def update_user_details(self,id,data):
         try:
