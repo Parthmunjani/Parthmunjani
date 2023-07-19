@@ -28,3 +28,4 @@ class OrderItemDetails(Resource):
             return {"status":True,"detail":data}, 200
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
+    

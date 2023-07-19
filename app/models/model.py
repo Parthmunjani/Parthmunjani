@@ -1,30 +1,58 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import request,make_response
+from flask import request, make_response
 from werkzeug.utils import secure_filename
 from datetime import datetime
 from uuid import uuid4
 import os
 import bcrypt
 from passlib.hash import pbkdf2_sha256
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_rbac import RBAC, RoleMixin, UserMixin
 
-db=SQLAlchemy()
+db = SQLAlchemy()
 
 class Change:
     def delete(instance):
         db.session.delete(instance)
         db.session.commit() 
+
     def add(instance):
         db.session.add(instance)
         db.session.commit()    
+
     def put():
         db.session.commit()
-            
-class UserModel(db.Model,Change):
+
+# class Roles(db.Model, Change, RoleMixin):
+#     __tablename__ = 'role'
+
+#     id = db.Column(db.Integer(), primary_key=True)
+#     name = db.Column(db.String(80), unique=True)
+#     description = db.Column(db.String(255))
+
+#     def __init__(self, data):
+#         self.name = data.get('name')
+#         self.description = data.get('description')
+
+#     def to_json(self):
+#         data={
+#               "id": self.id,
+#               "name": self.name,
+#               "description": self.description,
+#         }
+#         return data
+
+# users_roles = db.Table(
+#     'users_roles',
+#     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+#     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
+# )
+
+class UserModel(db.Model, Change):
     __tablename__="user"
     
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(36),nullable=False, default=str(uuid4()))
+    uuid = db.Column(db.String(36), nullable=False, default=str(uuid4()))
     name = db.Column(db.String(255))
     email = db.Column(db.String(255))
     password = db.Column(db.String(255))
@@ -34,12 +62,19 @@ class UserModel(db.Model,Change):
     modified_at=db.Column(db.DateTime,default=datetime.utcnow)
     is_deleted=db.Column(db.Boolean,default=False)
     
+    # roles = db.relationship(
+    #     'Roles',
+    #     secondary=users_roles,
+    #     backref=db.backref('user', lazy='dynamic')
+    # )
+    # role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
     def __init__(self,data):
         self.name=data.get("name")
         self.email=data.get("email")
         self.phone_number=data.get("phone_number")
         self.set_password(data.get("password"))
-            
+
         file = request.files.get("id_proof_document")
         if file:
             filename = secure_filename(file.filename)
@@ -57,25 +92,16 @@ class UserModel(db.Model,Change):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    """def set_password(self, password):
-        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-        self.password = hashed_password.decode("utf-8")
-
-    def check_password(self, password):
-        return bcrypt.checkpw(password.encode("utf-8"), self.password.encode("utf-8"))"""
-
-    """def check_password(self, password):
-        return self.password == password"""
-    
     def to_json(self):
-        data={
-              "id":self.id,
-              "name":self.name,
-              "email":self.email,
-              "phone_number":self.phone_number
-              }
+        data = {
+            "id": self.id,
+            "uuid": self.uuid,
+            "name": self.name,
+            "email": self.email,
+            "phone_number": self.phone_number,
+        }
         return data
-            
+    
 class CategoryModel(db.Model,Change):
     __tablename__="category"
     
@@ -92,13 +118,6 @@ class CategoryModel(db.Model,Change):
         self.parent_id = data.get('parent_id')
         # self.parent = parent
  
-    """def to_json(self):
-         data = {
-             'id': self.id,
-             'name': self.name,
-         }
-         return data"""
-    
     def to_json(self):
         data = {
             'id': self.id,
@@ -213,4 +232,3 @@ class OrderItemModel(db.Model,Change):
             "quantity":self.quantity
         }
         return data
-    

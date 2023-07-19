@@ -5,7 +5,7 @@ from app.v1.service.address import AddressService
 from app.v1.service.data_service import DataService
 from app.v1.validation.address import UserAddressSchema
 from app.v1.schema.addressschema import user_address_schema
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required,get_jwt_identity
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 
@@ -14,6 +14,7 @@ class Addresses(Resource):
     @jwt_required()
     async def get(self):
         try:
+            current_user = get_jwt_identity()
             address_service,status_code= await AddressService().get_all_addresses()
             return {"status":True,"details":address_service['detail']},status_code
         except Exception as e:
