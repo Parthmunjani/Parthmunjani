@@ -11,7 +11,7 @@ from app.v1.views.order import Orders, Order, OrderStatus, OrderStatusCounts
 from app.v1.views.order_item import OrderItemDetails
 import os
 from config import app,mail,api,celery
-from app.celery.email import Email
+from app.v1.celery.email import Email
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
