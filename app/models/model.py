@@ -47,10 +47,45 @@ class Change:
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
 #     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 # )
+class RoleModel(db.Model):
+    __tablename__ = 'roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    role_name = db.Column(db.String(255))
+    def __init__(self, data):
+        self.role_name = data.get("role_name")
+
+    def to_json(self):
+        data = {
+            "role_name": self.role_name,
+        }
+        return data
+class ApiPermission(db.Model):
+    __tablename__ = 'api_permissions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    api_name = db.Column(db.String(255))
+    method = db.Column(db.String(10))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role = db.relationship('RoleModel', backref='permissions')
+
+    def __init__(self, data):
+        self.api_name = data.get("api_name")
+        self.method = data.get("method")
+        self.role_id = data.get("role_id")
+
+    def to_json(self):
+        data = {
+            "api_name": self.api_name,
+            "method": self.method,
+            "role_id": self.role_id,
+        }
+        return data
+
 
 class UserModel(db.Model, Change):
-    __tablename__="user"
-    
+    __tablename__ = "user"
+
     id = db.Column(db.Integer, primary_key=True)
     uuid = db.Column(db.String(36), nullable=False, default=str(uuid4()))
     name = db.Column(db.String(255))
@@ -59,21 +94,16 @@ class UserModel(db.Model, Change):
     phone_number = db.Column(db.String(20))
     id_proof_document = db.Column(db.LargeBinary())
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    modified_at=db.Column(db.DateTime,default=datetime.utcnow)
-    is_deleted=db.Column(db.Boolean,default=False)
-    
-    # roles = db.relationship(
-    #     'Roles',
-    #     secondary=users_roles,
-    #     backref=db.backref('user', lazy='dynamic')
-    # )
-    # role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-
+    modified_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_deleted = db.Column(db.Boolean, default=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    # role = db.relationship("ApiPermission")
     def __init__(self,data):
         self.name=data.get("name")
         self.email=data.get("email")
         self.phone_number=data.get("phone_number")
         self.set_password(data.get("password"))
+        self.role_id=data.get("role_id")
 
         file = request.files.get("id_proof_document")
         if file:
@@ -84,7 +114,7 @@ class UserModel(db.Model, Change):
                     self.id_proof_document = f.read()
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
-                
+
     def set_password(self, password):
         hashed_password = generate_password_hash(password)
         self.password = hashed_password
@@ -99,9 +129,10 @@ class UserModel(db.Model, Change):
             "name": self.name,
             "email": self.email,
             "phone_number": self.phone_number,
+            "role_id":self.role_id,
         }
         return data
-    
+
 class CategoryModel(db.Model,Change):
     __tablename__="category"
     

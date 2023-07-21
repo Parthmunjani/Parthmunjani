@@ -5,10 +5,11 @@ from app.v1.schema.catrgotyschema import category_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
-
+from config import role_required
 class Categories(Resource):
     @swag_from(str(route)+"/category/get_all.yaml")
     @jwt_required()
+    @role_required([1])
     def get(self):
         try:
             categoty_service,status_code=CategoryService().get_all_categories()

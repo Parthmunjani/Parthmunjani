@@ -9,10 +9,11 @@ from flask_restful_swagger import swagger
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 from queue import Queue
-
+from config import measure_time
 class Users(Resource):
     @swag_from(str(route)+"/user/get_all.yaml")
     @jwt_required()
+    @measure_time
     async def get(self):
         try:
             async def get_users_async(result):
@@ -87,12 +88,12 @@ class AuthLogin(Resource):
             data = request.get_json()
             user = UserModel.query.filter_by(email=data['email']).first()
             if user and user.check_password(data['password']):
-                access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=1))
+                access_token = create_access_token(identity={"id": user.id, "role_id": user.role_id}, expires_delta=timedelta(hours=1))
                 return make_response({"status": True, "access_token": access_token})
             else:
                 return make_response({"status": False, "detail": "Invalid email or password"})
         except Exception as e:
-            return make_response({"status": False, "detail": str(e)})
+            return make_response({"status": False, "detail": "Invalid credentials"})
     
 class TokenRefresh(Resource):
     @jwt_required(refresh=True)

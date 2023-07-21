@@ -7,6 +7,7 @@ from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 from app.models.model import ProductModel,CategoryModel
 import psycopg2
+from config import role_required
 class Products(Resource):
     #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
@@ -84,6 +85,7 @@ class Products(Resource):
 class Product(Resource):
     @swag_from(str(route)+"/product/get_by_id.yaml")
     @jwt_required()
+    @role_required([2])
     def get(self, id):
         try:
             product_service=ProductService()
