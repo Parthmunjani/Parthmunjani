@@ -9,6 +9,7 @@ from app.v1.views.product import Product, Products
 from app.v1.views.address import Addresses, Address
 from app.v1.views.order import Orders, Order, OrderStatus, OrderStatusCounts
 from app.v1.views.order_item import OrderItemDetails
+from app.v1.views.role import Api_Permission,Role
 import os
 from config import app,mail,api,celery
 from app.v1.celery.email import Email
@@ -41,6 +42,6 @@ api.add_resource(OrderStatus, '/order/<int:id>/status')
 api.add_resource(OrderItemDetails, '/order_item')
 api.add_resource(OrderStatusCounts, '/order/count/<int:id>')
 api.add_resource(Email, '/send-email')
-
-
+api.add_resource(Api_Permission,'/api_permissions')
+api.add_resource(Role,'/role')
 

@@ -12,6 +12,7 @@ class Products(Resource):
     #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
     @jwt_required()
+    @role_required([1])
     def get(self):
         try:
             conn = psycopg2.connect(

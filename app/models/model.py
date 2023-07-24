@@ -47,7 +47,7 @@ class Change:
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
 #     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 # )
-class RoleModel(db.Model):
+class RoleModel(db.Model,Change):
     __tablename__ = 'roles'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -57,10 +57,11 @@ class RoleModel(db.Model):
 
     def to_json(self):
         data = {
+            "id":self.id,
             "role_name": self.role_name,
         }
         return data
-class ApiPermission(db.Model):
+class ApiPermission(db.Model,Change):
     __tablename__ = 'api_permissions'
 
     id = db.Column(db.Integer, primary_key=True)

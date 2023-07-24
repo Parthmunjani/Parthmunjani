@@ -9,11 +9,12 @@ from flask_restful_swagger import swagger
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 from queue import Queue
-from config import measure_time
+from config import measure_time,role_required
 class Users(Resource):
     @swag_from(str(route)+"/user/get_all.yaml")
     @jwt_required()
     @measure_time
+    @role_required([1])
     async def get(self):
         try:
             async def get_users_async(result):
