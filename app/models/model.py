@@ -69,7 +69,6 @@ class ApiPermission(db.Model,Change):
     method = db.Column(db.String(10))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     role = db.relationship('RoleModel', backref='permissions')
-
     def __init__(self, data):
         self.api_name = data.get("api_name")
         self.method = data.get("method")
@@ -99,6 +98,7 @@ class UserModel(db.Model, Change):
     is_deleted = db.Column(db.Boolean, default=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     # role = db.relationship("ApiPermission")
+    role = db.relationship('RoleModel')
     def __init__(self,data):
         self.name=data.get("name")
         self.email=data.get("email")
@@ -115,6 +115,13 @@ class UserModel(db.Model, Change):
                     self.id_proof_document = f.read()
             except Exception as e:
                 return make_response({"status":False,"details":str(e)})
+
+    @property
+    def role_name(self):
+        # Access the role_name from the associated RoleModel
+        if self.role:
+            return self.role.role_name
+        return None
 
     def set_password(self, password):
         hashed_password = generate_password_hash(password)

@@ -1,5 +1,4 @@
-from celery import Celery
-from flask import Flask, Blueprint, request
+from flask import  Blueprint
 from flask_restful import Api, Resource
 # from app.models.model import db
 # from flask_migrate import Migrate
@@ -11,7 +10,7 @@ from app.v1.views.order import Orders, Order, OrderStatus, OrderStatusCounts
 from app.v1.views.order_item import OrderItemDetails
 from app.v1.views.role import Api_Permission,Role
 import os
-from config import app,mail,api,celery
+from config import app
 from app.v1.celery.email import Email
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'

@@ -11,36 +11,12 @@ from app.v1.views.swagger.swagger import route
 import logging
 # import time
 # import functools
-from config import logger,measure_time,role_required
-#Create a logger
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.INFO)
-#
-#
-# # Create a file handler
-# handler = logging.FileHandler('app.log')
-# handler.setLevel(logging.INFO)
-#
-# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# handler.setFormatter(formatter)
-#
-# # Add the handler to the logger
-# logger.addHandler(handler)
-
-# def measure_time(func):
-#     @functools.wraps(func)
-#     async def wrapper(*args, **kwargs):
-#         start_time = time.monotonic()
-#         response = await func(*args, **kwargs)
-#         end_time = time.monotonic()
-#         logger.info(f'{func.__name__} took {end_time - start_time:.6f} seconds')
-#         return response
-#     return wrapper
+from decorators import measure_time,role_required
 class Addresses(Resource):
     @swag_from(str(route)+"/address/get_all.yaml")
     @jwt_required()
     @measure_time
-    @role_required([1])
+    @role_required(["admin"])
     async def get(self):
         try:
             current_user = get_jwt_identity()

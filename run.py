@@ -1,5 +1,6 @@
-from app.v1.views import app
 import asyncio
+
+from config import app
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
