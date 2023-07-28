@@ -1,5 +1,4 @@
 import os
-from flasgger import Swagger
 
 template = {
     "swagger": "2.0",

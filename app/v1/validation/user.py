@@ -1,5 +1,6 @@
 from pydantic import BaseModel, constr, EmailStr, validator
 
+
 class Userschema(BaseModel):
     name: constr(max_length=255)
     email: EmailStr

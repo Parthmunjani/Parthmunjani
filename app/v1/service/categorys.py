@@ -1,6 +1,6 @@
-from app.models.model import CategoryModel
+from app.models.category import CategoryModel
 from app.v1.service.data_service import DataService
-from app.v1.schema.catrgotyschema import category_schema
+
 
 class CategoryService:
     def get_all_categories(self):

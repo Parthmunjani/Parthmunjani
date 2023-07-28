@@ -1,10 +1,11 @@
 from flask import  request
 from app.v1.service.order import OrderService
-from flask_restful import Resource,reqparse
+from flask_restful import Resource
 from app.v1.schema.orderschema import order_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
+
 
 class Orders(Resource):
     @swag_from(str(route)+"/order/get_all.yaml")
@@ -16,7 +17,6 @@ class Orders(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    #@swag_from(str(route)+"/order.yaml", methods=['POST'])
     def post(self):
         try:
             order_service = OrderService()
@@ -32,6 +32,7 @@ class Orders(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
+
 class Order(Resource):
     @swag_from(str(route)+"/order/get_by_id.yaml")
     @jwt_required()
@@ -42,8 +43,8 @@ class Order(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
+
 class OrderStatus(Resource):
-    #@swag_from(str(route)+"/order.yaml", methods=['GET'])
     @jwt_required()
     def get(self, id):
         try:
@@ -52,7 +53,6 @@ class OrderStatus(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    #@swag_from(str(route)+"/order.yaml", methods=['PUT'])
     @jwt_required()
     def put(self, id):
         try:
@@ -64,8 +64,8 @@ class OrderStatus(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
+
 class OrderStatusCounts(Resource):
-    #@swag_from(str(route)+"/order.yaml", methods=['GET'])
     @jwt_required()
     def get(self, id):
         try:

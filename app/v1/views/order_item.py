@@ -1,9 +1,10 @@
-from flask import make_response,request
+from flask import request
 from flask_restful import Resource
-from app.models.model import OrderItemModel
+from app.models.order_item import OrderItemModel
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
+
 
 class OrderItemDetails(Resource):
     @swag_from(str(route)+"/order_item/get_all.yaml")
@@ -18,7 +19,6 @@ class OrderItemDetails(Resource):
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
     
-    #@swag_from(str(route)+"/order_item.yaml", methods=['POST'])     
     def post(self):
         try:
             data=request.get_json()

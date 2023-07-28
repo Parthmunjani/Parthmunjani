@@ -1,7 +1,5 @@
 from flask import  Blueprint
-from flask_restful import Api, Resource
-# from app.models.model import db
-# from flask_migrate import Migrate
+from flask_restful import Api
 from app.v1.views.user import Users, User, AuthLogin, TokenRefresh
 from app.v1.views.category import Category, Categories
 from app.v1.views.product import Product, Products
@@ -9,9 +7,8 @@ from app.v1.views.address import Addresses, Address
 from app.v1.views.order import Orders, Order, OrderStatus, OrderStatusCounts
 from app.v1.views.order_item import OrderItemDetails
 from app.v1.views.role import Api_Permission,Role
-import os
 from config import app
-from app.v1.celery.email import Email
+from app.v1.views.send_email import Email
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587

@@ -1,4 +1,4 @@
-from flask import make_response, request
+from flask import  request
 from app.v1.service.categorys import CategoryService
 from flask_restful import Resource
 from app.v1.schema.catrgotyschema import category_schema
@@ -6,6 +6,8 @@ from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
 from decorators import role_required
+
+
 class Categories(Resource):
     @swag_from(str(route)+"/category/get_all.yaml")
     @jwt_required()
@@ -17,7 +19,6 @@ class Categories(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
 
-    #@swag_from(str(route)+"/category.yaml",methods=['POST'])
     def post(self):
         try:
             categoty_service=CategoryService()
@@ -32,6 +33,7 @@ class Categories(Resource):
             return {"status":True,"details":response['detail']},status_code
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
+
 
 class Category(Resource):
     @swag_from(str(route)+"/category/get_by_id.yaml")

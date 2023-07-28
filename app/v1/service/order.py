@@ -1,7 +1,10 @@
-from app.models.model import OrderModel, OrderItemModel, CategoryModel
+from app.models.order import OrderModel
+from app.models.category import CategoryModel
+from app.models.order_item import OrderItemModel
 from sqlalchemy import func
 from app.v1.service.data_service import DataService
-from flask import request
+
+
 class OrderService:
     async def get_orders(self):
         try:

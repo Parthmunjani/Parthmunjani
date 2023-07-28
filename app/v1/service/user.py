@@ -1,9 +1,14 @@
-from app.models.model import UserModel,OrderItemModel,OrderModel,ProductModel
+from app.models.user import UserModel
+from app.models.order_item import OrderItemModel
+from app.models.order import OrderModel
+from app.models.product import ProductModel
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 from app.v1.service.data_service import DataService
 import psycopg2
+
+
 class UserService:
     async def get_users(self):
         try:

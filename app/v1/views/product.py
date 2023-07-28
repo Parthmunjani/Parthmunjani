@@ -1,15 +1,15 @@
-from flask import make_response, request
+from flask import  request
 from app.v1.service.product import ProductService
 from flask_restful import Resource
 from app.v1.schema.productschema import product_schema
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
-from app.models.model import ProductModel,CategoryModel
 import psycopg2
 from decorators import role_required
+
+
 class Products(Resource):
-    #print(route)
     @swag_from(str(route)+"/product/get_all.yaml")
     @jwt_required()
     @role_required(["admin"])
@@ -83,6 +83,7 @@ class Products(Resource):
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
 
+
 class Product(Resource):
     @swag_from(str(route)+"/product/get_by_id.yaml")
     @jwt_required()
@@ -95,7 +96,6 @@ class Product(Resource):
         except Exception as e:
             return {"status":True,"detail":str(e)}, 400
      
-    #@swag_from(str(route)+"/product.yaml", methods=["PUT"]) 
     @jwt_required()
     def put(self, id):
         try:    

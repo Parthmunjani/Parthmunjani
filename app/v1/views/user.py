@@ -1,16 +1,15 @@
-from app.models.model import UserModel
+from app.models.user import UserModel
 from flask import make_response,request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token,jwt_required,get_jwt_identity
 from app.v1.service.user import UserService
 from app.v1.schema.userschema import user_schema
 from datetime import timedelta
-from flask_restful_swagger import swagger
 from flasgger import swag_from
 from app.v1.views.swagger.swagger import route
-from queue import Queue
-# from config import measure_time
 from decorators import role_required,measure_time
+
+
 class Users(Resource):
     @swag_from(str(route)+"/user/get_all.yaml")
     @jwt_required()
@@ -30,7 +29,6 @@ class Users(Resource):
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
         
-    # @swag_from(str(route)+"/user.yaml", methods=["POST"])
     async def post(self):
         try:
             user_service=UserService()
@@ -46,6 +44,7 @@ class Users(Resource):
             return {"status":True,"details":response},ststus_code
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
+
 
 class User(Resource):
     @swag_from(str(route)+"/user/get_by_id.yaml")
@@ -64,7 +63,6 @@ class User(Resource):
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
           
-    # @swag_from(str(route)+"/user.yaml", methods=["PUT"])   
     @jwt_required()
     def put(self, id):
         try:
@@ -84,6 +82,7 @@ class User(Resource):
         except Exception as e:
             return {"status":False,"detail":str(e)}, 400
 
+
 class AuthLogin(Resource):
     def post(self):
         try:
@@ -91,14 +90,15 @@ class AuthLogin(Resource):
             user = UserModel.query.filter_by(email=data['email']).first()
             if user and user.check_password(data['password']):
                 access_token = create_access_token(identity={
-                    "id": user.id,"role_id": user.role_id,"role_name": user.role_name  # Include role_name in the access token
+                    "id": user.id,"role_id": user.role_id,"role_name": user.role_name
                 }, expires_delta=timedelta(hours=1))
                 return make_response({"status": True, "access_token": access_token})
             else:
                 return make_response({"status": False, "detail": "Invalid email or password"})
         except Exception as e:
             return make_response({"status": False, "detail": str(e)})
-    
+
+
 class TokenRefresh(Resource):
     @jwt_required(refresh=True)
     def post(self):

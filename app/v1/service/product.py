@@ -1,10 +1,11 @@
 from datetime import datetime
-from app.models.model import ProductModel
+from app.models.product import ProductModel
 from app.v1.service.data_service import DataService
 from flask import request
 import sqlalchemy
 from app.models.model import db
 import psycopg2
+
 
 class ProductService:    
     def all_product(self):

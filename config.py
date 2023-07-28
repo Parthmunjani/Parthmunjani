@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_restful import Api
-
+from datetime import timedelta
 from app.models.model import db
 
 
@@ -41,6 +41,18 @@ app.config['result_backend'] = 'redis://localhost:6379/0'
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
+CELERYBEAT_SCHEDULE = {
+    'send-scheduled-email': {
+        'task': 'app.v1.celery.celery_send_email.send_scheduled_email',
+        'schedule': timedelta(minutes=1),
+    },
+}
+
+app.config['CELERY_BEAT_SCHEDULE'] = CELERYBEAT_SCHEDULE
+
+celery.conf.beat_schedule = CELERYBEAT_SCHEDULE
+celery.conf.timezone = 'UTC'
 
 from app.v1.views.swagger.swagger import swagger_config, template
 swagger = Swagger(app, config=swagger_config, template=template)

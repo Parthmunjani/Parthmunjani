@@ -1,6 +1,9 @@
 from functools import wraps
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
-from logg import logger
+from loggers import logger
+import time,functools
+
+
 def role_required(allowed_roles):
     def decorator(func):
         @wraps(func)
@@ -19,7 +22,6 @@ def role_required(allowed_roles):
         return wrapper
     return decorator
 
-import time,functools
 
 def measure_time(func):
     @functools.wraps(func)

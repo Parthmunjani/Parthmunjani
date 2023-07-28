@@ -1,6 +1,7 @@
 from flask_restful import Resource
-from flask import make_response,request
-from app.models.model import ApiPermission,RoleModel
+from flask import request
+from app.models.apipermission import ApiPermission
+from app.models.role import RoleModel
 
 class Api_Permission(Resource):
     def get(self):
@@ -22,6 +23,7 @@ class Api_Permission(Resource):
             return {"status": True, "detail": data}, 200
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
+
 
 class Role(Resource):
     def get(self):

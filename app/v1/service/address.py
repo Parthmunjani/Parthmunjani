@@ -1,7 +1,9 @@
-from app.models.model import UserAddressModel
+from app.models.address import UserAddressModel
 from datetime import datetime
 from app.v1.service.data_service import DataService
 import psycopg2
+
+
 class AddressService:
     async def get_all_addresses(self):
         try:

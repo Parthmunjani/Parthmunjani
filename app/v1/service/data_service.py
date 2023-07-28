@@ -1,6 +1,4 @@
-from app.models.model import *
 from app.models.model import db
-from app.models.model import *
 
 class DataService:
     def __init__(self,model):
@@ -16,12 +14,6 @@ class DataService:
             return data
         except Exception as e:
             return {"status": False, "detail": str(e)}, 400
-        """data = self._model.query.filter_by(id=id).first()
-        
-        if not data:
-            return {}
-        
-        return data.to_json()"""
     
     def delete_data(self, id):
         item = self._model.query.get(id)

@@ -1,5 +1,4 @@
 from pydantic import BaseModel, constr, validator
-from flask import make_response
 
 class OrderSchema(BaseModel):
     user_id: int
